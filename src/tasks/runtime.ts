@@ -1,11 +1,12 @@
-import { SpawnOptions, spawnSync } from 'child_process';
-import { existsSync, readFileSync, statSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import { platform } from 'os';
 import { dirname, join, resolve } from 'path';
 import { format } from 'util';
 import * as chalk from 'chalk';
+import { createSyncFn } from 'synckit/lib';
 import * as logging from '../logging';
 import { TasksManifest, TaskSpec } from './model';
+import { ShellOptions } from './shell-worker';
 import { Tasks } from './tasks';
 
 const ENV_TRIM_LEN = 20;
@@ -138,7 +139,7 @@ class RunTask {
             command,
             cwd,
           });
-          hasError = result.status !== 0;
+          hasError = result.exitCode !== 0;
         } catch (e) {
           // This is the error 'shx' will throw
           if (e?.message?.startsWith('non-zero exit code:')) {
@@ -172,7 +173,7 @@ class RunTask {
       logprefix: 'condition: ',
       quiet: true,
     });
-    if (result.status === 0) {
+    if (result.exitCode === 0) {
       return true;
     } else {
       return false;
@@ -207,7 +208,7 @@ class RunTask {
       if (value.startsWith('$(') && value.endsWith(')')) {
         const query = value.substring(2, value.length - 1);
         const result = this.shellEval({ command: query });
-        if (result.status !== 0) {
+        if (result.exitCode !== 0) {
           const error = result.error
             ? result.error.stack
             : result.stderr?.toString()
@@ -238,43 +239,18 @@ class RunTask {
     return format(`${chalk.underline(this.fullname)} |`, ...args);
   }
 
-  private shell(options: ShellOptions) {
-    const quiet = options.quiet ?? false;
-    if (!quiet) {
-      const log = new Array<string>();
+  private shell(options: Omit<ShellOptions, 'logger' | 'env' | 'defaultWorkDir'>) {
+    const syncFn = createSyncFn(require.resolve('./shell-worker.ts'));
 
-      if (options.logprefix) {
-        log.push(options.logprefix);
-      }
-
-      log.push(options.command);
-
-      if (options.cwd) {
-        log.push(`(cwd: ${options.cwd})`);
-      }
-
-      this.log(log.join(' '));
-    }
-
-    const cwd = options.cwd ?? this.workdir;
-    if (!existsSync(cwd) || !statSync(cwd).isDirectory()) {
-      throw new Error(`invalid workdir (cwd): ${cwd} must be an existing directory`);
-    }
-
-    return spawnSync(options.command, {
+    return syncFn({
       ...options,
-      cwd,
-      shell: true,
-      stdio: 'inherit',
-      env: {
-        ...process.env,
-        ...this.env,
-      },
-      ...options.spawnOptions,
+      logger: this.log,
+      env: this.env,
+      defaultWorkDir: this.workdir,
     });
   }
 
-  private shellEval(options: ShellOptions) {
+  private shellEval(options: Omit<ShellOptions, 'logger' | 'env' | 'defaultWorkDir'>) {
     return this.shell({
       quiet: true,
       ...options,
@@ -289,16 +265,4 @@ class RunTask {
     const program = require.resolve(join(moduleRoot, 'lib', `${builtin}.task.js`));
     return `${process.execPath} ${program}`;
   }
-}
-
-interface ShellOptions {
-  readonly command: string;
-  /**
-   * @default - project dir
-   */
-  readonly cwd?: string;
-  readonly logprefix?: string;
-  readonly spawnOptions?: SpawnOptions;
-  /** @default false */
-  readonly quiet?: boolean;
 }

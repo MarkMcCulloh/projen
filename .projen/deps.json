@@ -18,6 +18,10 @@
       "type": "build"
     },
     {
+      "name": "@types/micromatch",
+      "type": "build"
+    },
+    {
       "name": "@types/node",
       "version": "^10.17.0",
       "type": "build"
@@ -110,6 +114,14 @@
       "type": "bundled"
     },
     {
+      "name": "@yarnpkg/fslib",
+      "type": "bundled"
+    },
+    {
+      "name": "@yarnpkg/shell",
+      "type": "bundled"
+    },
+    {
       "name": "chalk",
       "type": "bundled"
     },
@@ -135,7 +147,7 @@
       "type": "bundled"
     },
     {
-      "name": "shx",
+      "name": "synckit",
       "type": "bundled"
     },
     {

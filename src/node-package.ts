@@ -5,6 +5,7 @@ import * as semver from 'semver';
 import { resolve as resolveJson } from './_resolve';
 import { Component } from './component';
 import { DependencyType } from './deps';
+import { FilePatternList } from './file-pattern-list';
 import { JsonFile } from './json';
 import { Project } from './project';
 import { Task } from './tasks';
@@ -290,6 +291,13 @@ export interface NodePackageOptions {
    * @default "NPM_TOKEN"
    */
   readonly npmTokenSecret?: string;
+
+  /**
+   * Files to be included in the published package. Accepts files, directories, and glob patterns.
+   *
+   * @default - All files are included, except those matched by .npmignore
+   */
+  readonly files?: string[];
 }
 
 /**
@@ -379,6 +387,7 @@ export class NodePackage extends Component {
   private readonly engines: Record<string, string> = {};
   private readonly peerDependencyOptions: PeerDependencyOptions;
   private readonly file: JsonFile;
+  private readonly files: FilePatternList;
   private _renderedDeps?: NpmDependencies;
 
   constructor(project: Project, options: NodePackageOptions = {}) {
@@ -390,6 +399,7 @@ export class NodePackage extends Component {
     this.allowLibraryDependencies = options.allowLibraryDependencies ?? true;
     this.packageManager = options.packageManager ?? NodePackageManager.YARN;
     this.entrypoint = options.entrypoint ?? 'lib/index.js';
+    this.files = new FilePatternList(...(options.files ?? []));
     this.lockFile = determineLockfile(this.packageManager);
 
     this.project.annotateGenerated(`/${this.lockFile}`);
@@ -421,6 +431,7 @@ export class NodePackage extends Component {
       peerDependencies: {},
       dependencies: {},
       bundledDependencies: [],
+      files: () => this.files.patterns,
       keywords: () => this.renderKeywords(),
       engines: () => this.renderEngines(),
       main: this.entrypoint !== '' ? this.entrypoint : undefined,
@@ -536,6 +547,15 @@ export class NodePackage extends Component {
     for (const dep of deps) {
       this.project.deps.addDependency(dep, DependencyType.BUNDLED);
     }
+  }
+
+  /**
+   * Adds files to be included via the `files` field. These files
+   * will be included in the published package.
+   * @param patterns Files, directories, or glob patterns to add
+   */
+  public addFiles(...patterns: string[]) {
+    this.files.addPatterns(...patterns);
   }
 
   /**
@@ -672,6 +692,10 @@ export class NodePackage extends Component {
   public preSynthesize() {
     super.preSynthesize();
     this._renderedDeps = this.renderDependencies();
+
+    if (this.manifest.files?.length === 0) {
+      delete this.manifest.files;
+    }
   }
 
   public postSynthesize() {

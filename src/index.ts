@@ -35,6 +35,7 @@ export * from './yaml';
 export * from './xmlfile';
 export * from './source-code';
 export * from './upgrade-dependencies';
+export * from './file-pattern-list';
 
 // export submobules
 export * as tasks from './tasks';

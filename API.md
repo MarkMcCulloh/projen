@@ -18,6 +18,7 @@ Name|Description
 [DockerComposeService](#projen-dockercomposeservice)|A docker-compose service.
 [Eslint](#projen-eslint)|*No description*
 [FileBase](#projen-filebase)|*No description*
+[FilePatternList](#projen-filepatternlist)|*No description*
 [GitHubProject](#projen-githubproject)|GitHub-based project.
 [Gitpod](#projen-gitpod)|The Gitpod component which emits .gitpod.yml.
 [IgnoreFile](#projen-ignorefile)|*No description*
@@ -396,6 +397,7 @@ new AwsCdkConstructLibrary(options: AwsCdkConstructLibraryOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -599,6 +601,7 @@ new AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -766,6 +769,7 @@ new Cdk8sTypeScriptApp(options: Cdk8sTypeScriptAppOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -991,6 +995,7 @@ new ConstructLibrary(options: ConstructLibraryOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -1140,6 +1145,7 @@ new ConstructLibraryAws(options: AwsCdkConstructLibraryOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -1300,6 +1306,7 @@ new ConstructLibraryCdk8s(options: ConstructLibraryCdk8sOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -1469,6 +1476,7 @@ new ConstructLibraryCdktf(options: ConstructLibraryCdktfOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -2070,6 +2078,83 @@ __Returns__:
 
 
 
+## class FilePatternList 🔹 <a id="projen-filepatternlist"></a>
+
+
+
+
+### Initializer
+
+
+
+
+```ts
+new FilePatternList(...patterns: string[])
+```
+
+* **patterns** (<code>string</code>)  *No description*
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**patterns**🔹 | <code>Array<string></code> | <span></span>
+
+### Methods
+
+
+#### addPatterns(...patterns)🔹 <a id="projen-filepatternlist-addpatterns"></a>
+
+Add file patterns.
+
+Files that match this pattern will be included. If the
+pattern starts with a negation mark `!`, files that match will _not_ be
+included.
+
+Comment lines (start with `#`) are ignored.
+
+```ts
+addPatterns(...patterns: string[]): void
+```
+
+* **patterns** (<code>string</code>)  Ignore patterns.
+
+
+
+
+#### exclude(...patterns)🔹 <a id="projen-filepatternlist-exclude"></a>
+
+Ignore the files that match these patterns.
+
+```ts
+exclude(...patterns: string[]): void
+```
+
+* **patterns** (<code>string</code>)  The patterns to match.
+
+
+
+
+#### removePatterns(...patterns)🔹 <a id="projen-filepatternlist-removepatterns"></a>
+
+Removes patterns previously added.
+
+If `addPattern()` is called after this, the pattern will be added again.
+
+```ts
+removePatterns(...patterns: string[]): void
+```
+
+* **patterns** (<code>string</code>)  patters to remove.
+
+
+
+
+
+
 ## class GitHubProject ⚠️ <a id="projen-githubproject"></a>
 
 GitHub-based project.
@@ -2358,7 +2443,7 @@ If `addPattern()` is called after this, the pattern will be added again.
 removePatterns(...patterns: string[]): void
 ```
 
-* **patterns** (<code>string</code>)  patters to remove.
+* **patterns** (<code>string</code>)  patterns to remove.
 
 
 
@@ -2596,6 +2681,7 @@ new JsiiProject(options: JsiiProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -3039,6 +3125,7 @@ new NodePackage(project: Project, options?: NodePackageOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -3167,6 +3254,22 @@ addField(name: string, value: any): void
 
 * **name** (<code>string</code>)  field name.
 * **value** (<code>any</code>)  field value.
+
+
+
+
+#### addFiles(...patterns)🔹 <a id="projen-nodepackage-addfiles"></a>
+
+Adds files to be included via the `files` field.
+
+These files 
+will be included in the published package.
+
+```ts
+addFiles(...patterns: string[]): void
+```
+
+* **patterns** (<code>string</code>)  Files, directories, or glob patterns to add.
 
 
 
@@ -3343,6 +3446,7 @@ new NodeProject(options: NodeProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -4433,6 +4537,7 @@ new TypeScriptAppProject(options: TypeScriptProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -4568,6 +4673,7 @@ new TypeScriptLibraryProject(options: TypeScriptProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -4703,6 +4809,7 @@ new TypeScriptProject(options: TypeScriptProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -7680,6 +7787,7 @@ new web.NextJsProject(options: NextJsProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -7815,6 +7923,7 @@ new web.NextJsTypeScriptProject(options: NextJsTypeScriptProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -8022,6 +8131,7 @@ new web.ReactProject(options: ReactProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -8198,6 +8308,7 @@ new web.ReactTypeScriptProject(options: ReactTypeScriptProjectOptions)
   * **description** (<code>string</code>)  The description is just a string that helps people understand the purpose of the package. __*Optional*__
   * **devDeps** (<code>Array<string></code>)  Build dependencies for this module. __*Default*__: []
   * **entrypoint** (<code>string</code>)  Module entrypoint (`main` in `package.json`). __*Default*__: "lib/index.js"
+  * **files** (<code>Array<string></code>)  Files to be included in the published package. __*Default*__: All files are included, except those matched by .npmignore
   * **homepage** (<code>string</code>)  Package's Homepage / Website. __*Optional*__
   * **keywords** (<code>Array<string></code>)  Keywords to include in `package.json`. __*Optional*__
   * **license** (<code>string</code>)  License's SPDX identifier. __*Default*__: "Apache-2.0"
@@ -8392,6 +8503,7 @@ Name | Type | Description
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?🔹 | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -8530,6 +8642,7 @@ Name | Type | Description
 **entrypointTypes**?🔹 | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -8681,6 +8794,7 @@ Name | Type | Description
 **entrypointTypes**?🔹 | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -8823,6 +8937,7 @@ Name | Type | Description
 **eslint**?⚠️ | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?⚠️ | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?⚠️ | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?⚠️ | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?⚠️ | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?⚠️ | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?⚠️ | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -8970,6 +9085,7 @@ Name | Type | Description
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?🔹 | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -9112,6 +9228,7 @@ Name | Type | Description
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?🔹 | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -9253,6 +9370,7 @@ Name | Type | Description
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?🔹 | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -10062,6 +10180,7 @@ Name | Type | Description
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
 **excludeTypescript**?🔹 | <code>Array<string></code> | Accepts a list of glob patterns.<br/>__*Optional*__
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -10271,6 +10390,7 @@ Name | Type | Description
 **description**?🔹 | <code>string</code> | The description is just a string that helps people understand the purpose of the package.<br/>__*Optional*__
 **devDeps**?🔹 | <code>Array<string></code> | Build dependencies for this module.<br/>__*Default*__: []
 **entrypoint**?🔹 | <code>string</code> | Module entrypoint (`main` in `package.json`).<br/>__*Default*__: "lib/index.js"
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **homepage**?🔹 | <code>string</code> | Package's Homepage / Website.<br/>__*Optional*__
 **keywords**?🔹 | <code>Array<string></code> | Keywords to include in `package.json`.<br/>__*Optional*__
 **license**?🔹 | <code>string</code> | License's SPDX identifier.<br/>__*Default*__: "Apache-2.0"
@@ -10333,6 +10453,7 @@ Name | Type | Description
 **devContainer**?🔹 | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces).<br/>__*Default*__: false
 **devDeps**?🔹 | <code>Array<string></code> | Build dependencies for this module.<br/>__*Default*__: []
 **entrypoint**?🔹 | <code>string</code> | Module entrypoint (`main` in `package.json`).<br/>__*Default*__: "lib/index.js"
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -10685,6 +10806,7 @@ Name | Type | Description
 **entrypointTypes**?⚠️ | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?⚠️ | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?⚠️ | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?⚠️ | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?⚠️ | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?⚠️ | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?⚠️ | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -10812,6 +10934,7 @@ Name | Type | Description
 **entrypointTypes**?🔹 | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -12323,6 +12446,7 @@ Name | Type | Description
 **devContainer**?🔹 | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces).<br/>__*Default*__: false
 **devDeps**?🔹 | <code>Array<string></code> | Build dependencies for this module.<br/>__*Default*__: []
 **entrypoint**?🔹 | <code>string</code> | Module entrypoint (`main` in `package.json`).<br/>__*Default*__: "lib/index.js"
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -12445,6 +12569,7 @@ Name | Type | Description
 **entrypointTypes**?🔹 | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -12595,6 +12720,7 @@ Name | Type | Description
 **devContainer**?🔹 | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces).<br/>__*Default*__: false
 **devDeps**?🔹 | <code>Array<string></code> | Build dependencies for this module.<br/>__*Default*__: []
 **entrypoint**?🔹 | <code>string</code> | Module entrypoint (`main` in `package.json`).<br/>__*Default*__: "lib/index.js"
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__
@@ -12745,6 +12871,7 @@ Name | Type | Description
 **entrypointTypes**?🔹 | <code>string</code> | The .d.ts file that includes the type declarations for this module.<br/>__*Default*__: .d.ts file derived from the project's entrypoint (usually lib/index.d.ts)
 **eslint**?🔹 | <code>boolean</code> | Setup eslint.<br/>__*Default*__: true
 **eslintOptions**?🔹 | <code>[EslintOptions](#projen-eslintoptions)</code> | Eslint options.<br/>__*Default*__: opinionated default options
+**files**?🔹 | <code>Array<string></code> | Files to be included in the published package.<br/>__*Default*__: All files are included, except those matched by .npmignore
 **github**?🔹 | <code>boolean</code> | Enable GitHub integration.<br/>__*Default*__: true
 **githubOptions**?🔹 | <code>[github.GitHubOptions](#projen-github-githuboptions)</code> | Options for GitHub integration.<br/>__*Default*__: see GitHubOptions
 **gitignore**?🔹 | <code>Array<string></code> | Additional entries to .gitignore.<br/>__*Optional*__

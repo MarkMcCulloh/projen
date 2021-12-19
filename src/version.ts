@@ -1,7 +1,7 @@
 import { posix } from 'path';
 import { Component } from './component';
 import { Project } from './project';
-import { Task } from './tasks';
+import { Task } from './task';
 
 /**
  * Options for `Version`.
@@ -19,6 +19,11 @@ export interface VersionOptions {
    * are emitted.
    */
   readonly artifactsDirectory: string;
+
+  /**
+   * Custom configuration for versionrc file used by standard-release
+   */
+  readonly versionrcOptions?: Record<string, any>;
 }
 
 export class Version extends Component {
@@ -65,6 +70,8 @@ export class Version extends Component {
       CHANGELOG: changelogFile,
       BUMPFILE: bumpFile,
       RELEASETAG: releaseTagFile,
+      // doesn't work if custom configuration is long
+      VERSIONRCOPTIONS: JSON.stringify(options.versionrcOptions),
     };
 
     this.bumpTask = project.addTask('bump', {

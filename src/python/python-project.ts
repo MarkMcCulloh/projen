@@ -1,5 +1,5 @@
-import { Projenrc as ProjenrcJavaScript } from '../javascript';
-import { GitHubProject, GitHubProjectOptions, ProjectType } from '../project';
+import { GitHubProject, GitHubProjectOptions } from '../github';
+import { ProjectType } from '../project';
 import { Pip } from './pip';
 import { Poetry } from './poetry';
 import { Projenrc as ProjenrcPython, ProjenrcOptions } from './projenrc';
@@ -124,7 +124,7 @@ export interface PythonProjectOptions extends GitHubProjectOptions, PythonPackag
    * This will install `projen` as a python dependency and will add a `synth`
    * task which will run `.projenrc.py`.
    *
-   * @default false
+   * @default true
    */
   readonly projenrcPython?: boolean;
 
@@ -182,10 +182,8 @@ export class PythonProject extends GitHubProject {
     this.moduleName = options.moduleName;
     this.version = options.version;
 
-    if (options.projenrcPython ?? false) {
+    if (options.projenrcPython ?? true) {
       new ProjenrcPython(this, options.projenrcPythonOptions);
-    } else {
-      new ProjenrcJavaScript(this);
     }
 
     if (options.venv ?? true) {

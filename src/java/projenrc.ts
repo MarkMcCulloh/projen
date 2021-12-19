@@ -2,7 +2,7 @@ import { dirname, join } from 'path';
 import { existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
 import { PROJEN_VERSION } from '../common';
 import { Component } from '../component';
-import { DependencyType } from '../deps';
+import { DependencyType } from '../dependencies';
 import { readJsiiManifest } from '../inventory';
 import { Project } from '../project';
 import { Pom } from './pom';
@@ -71,16 +71,15 @@ export class Projenrc extends Component {
     pom.addPlugin('org.codehaus.mojo/exec-maven-plugin@3.0.0');
 
     // set up the "default" task which is the task executed when `projen` is executed for this project.
-    const defaultTask = project.addTask(Project.DEFAULT_TASK, { description: 'Synthesize the project' });
-    defaultTask.exec(`mvn ${compileGoal} --quiet`);
-    defaultTask.exec(`mvn exec:java --quiet -Dexec.mainClass=${this.className}${execOpts}`);
+    project.defaultTask.exec(`mvn ${compileGoal} --quiet`);
+    project.defaultTask.exec(`mvn exec:java --quiet -Dexec.mainClass=${this.className}${execOpts}`);
 
     // if this is a new project, generate a skeleton for projenrc.java
     this.generateProjenrc();
   }
 
   private generateProjenrc() {
-    const bootstrap = this.project.newProject;
+    const bootstrap = this.project.initProject;
     if (!bootstrap) {
       return;
     }

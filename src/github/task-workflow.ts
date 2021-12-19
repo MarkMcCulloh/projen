@@ -1,10 +1,10 @@
-import { Task } from '../tasks';
+import { Task } from '../task';
+import { DEFAULT_GITHUB_ACTIONS_USER, setGitIdentityStep } from './constants';
 import { GitHub } from './github';
 import { GithubWorkflow } from './workflows';
 import { ContainerOptions, Job, JobPermissions, JobStep, JobStepOutput, Triggers } from './workflows-model';
 
 const DEFAULT_JOB_ID = 'build';
-const UBUNTU_LATEST = 'ubuntu-latest';
 
 export interface TaskWorkflowOptions {
   /**
@@ -94,6 +94,17 @@ export interface TaskWorkflowOptions {
    * @default {}
    */
   readonly outputs?: { [name: string]: JobStepOutput };
+
+  /**
+   * The git identity to use in this workflow.
+   */
+  readonly gitIdentity?: GitIdentity;
+
+  /**
+   * Github Runner selection labels
+   * @default ["ubuntu-latest"]
+   */
+  readonly runsOn?: string[];
 }
 
 /**
@@ -125,6 +136,7 @@ export class TaskWorkflow extends GithubWorkflow {
     const checkoutWith = options.checkoutWith ? { with: options.checkoutWith } : {};
     const preBuildSteps = options.preBuildSteps ?? [];
     const postBuildSteps = options.postBuildSteps ?? [];
+    const gitIdentity = options.gitIdentity ?? DEFAULT_GITHUB_ACTIONS_USER;
 
     if (options.artifactsDirectory) {
       postBuildSteps.push({
@@ -141,7 +153,7 @@ export class TaskWorkflow extends GithubWorkflow {
     }
 
     const job: Job = {
-      runsOn: UBUNTU_LATEST,
+      runsOn: options.runsOn ?? ['ubuntu-latest'],
       container: options.container,
       env: options.env,
       permissions: options.permissions,
@@ -158,13 +170,7 @@ export class TaskWorkflow extends GithubWorkflow {
         },
 
         // sets git identity so we can push later
-        {
-          name: 'Set git identity',
-          run: [
-            'git config user.name "Automation"',
-            'git config user.email "github-actions@github.com"',
-          ].join('\n'),
-        },
+        setGitIdentityStep(gitIdentity),
 
         ...preBuildSteps,
 
@@ -180,4 +186,19 @@ export class TaskWorkflow extends GithubWorkflow {
 
     this.addJobs({ [this.jobId]: job });
   }
+}
+
+/**
+ * Represents the git identity.
+ */
+export interface GitIdentity {
+  /**
+   * The name of the user.
+   */
+  readonly name: string;
+
+  /**
+   * The email address of the git user.
+   */
+  readonly email: string;
 }

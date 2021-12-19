@@ -1,25 +1,33 @@
-const { JsiiProject, JsonFile, TextFile } = require('./lib');
+const { cdk, github, JsonFile, TextFile } = require('./lib');
+const { workflows } = require('./lib/github');
 
-const project = new JsiiProject({
+const project = new cdk.JsiiProject({
   name: 'projen',
   description: 'CDK for software projects',
   repository: 'https://github.com/projen/projen.git',
   authorName: 'Elad Ben-Israel',
   authorEmail: 'benisrae@amazon.com',
   stability: 'experimental',
+  keywords: [
+    'scaffolding',
+    'cicd',
+    'project',
+    'management',
+    'generator',
+    'cdk',
+  ],
 
   pullRequestTemplateContents: [
     '---',
     'By submitting this pull request, I confirm that my contribution is made under the terms of the Apache 2.0 license.',
   ],
 
-  testdir: 'src/__tests__',
-
   bundledDeps: [
+    'conventional-changelog-config-spec',
     'yaml',
     'fs-extra',
     'yargs',
-    'decamelize',
+    'case',
     'glob@^7',
     'semver',
     'chalk',
@@ -30,6 +38,7 @@ const project = new JsiiProject({
   ],
 
   devDeps: [
+    '@types/conventional-changelog-config-spec',
     '@types/fs-extra@^8',
     '@types/yargs',
     '@types/glob',
@@ -41,13 +50,18 @@ const project = new JsiiProject({
 
   projenDevDependency: false, // because I am projen
   releaseToNpm: true,
-  minNodeVersion: '10.17.0',
+  minNodeVersion: '12.7.0',
+  workflowNodeVersion: '12.22.0', // required by @typescript-eslint/eslint-plugin@5.5.0
+
   codeCov: true,
   defaultReleaseBranch: 'main',
   gitpod: true,
   devContainer: true,
   // since this is projen, we need to always compile before we run
   projenCommand: '/bin/bash ./projen.bash',
+
+  // cli tests need projen to be compiled
+  compileBeforeTest: true,
 
   // makes it very hard to iterate with jest --watch
   jestOptions: {
@@ -60,20 +74,24 @@ const project = new JsiiProject({
     mavenArtifactId: 'projen',
     mavenEndpoint: 'https://s01.oss.sonatype.org',
   },
-
   publishToPypi: {
     distName: 'projen',
     module: 'projen',
   },
-  releaseFailureIssue: true,
+  publishToGo: {
+    moduleName: 'github.com/projen/projen-go',
+  },
 
-  // Disabled due to cycles between main module and submodules
-  // publishToGo: {
-  //   moduleName: 'github.com/projen/projen-go',
-  // },
+  releaseFailureIssue: true,
 
   autoApproveUpgrades: true,
   autoApproveOptions: { allowedUsernames: ['cdklabs-automation'], secret: 'GITHUB_TOKEN' },
+
+  depsUpgradeOptions: {
+    workflowOptions: {
+      secret: 'PROJEN_GITHUB_TOKEN',
+    },
+  },
 });
 
 // this script is what we use as the projen command in this project
@@ -92,7 +110,7 @@ new TextFile(project, 'projen.bash', {
 });
 project.npmignore.exclude('/projen.bash');
 
-project.addExcludeFromCleanup('src/__tests__/**');
+project.addExcludeFromCleanup('test/**'); // because snapshots include the projen marker...
 project.gitignore.include('templates/**');
 
 // expand markdown macros in readme
@@ -100,7 +118,7 @@ const macros = project.addTask('readme-macros');
 macros.exec('mv README.md README.md.bak');
 macros.exec('cat README.md.bak | markmac > README.md');
 macros.exec('rm README.md.bak');
-project.buildTask.spawn(macros);
+project.postCompileTask.spawn(macros);
 
 new JsonFile(project, '.markdownlint.json', {
   obj: {
@@ -165,5 +183,49 @@ project.npmignore.exclude('/VISION.md');
 project.npmignore.exclude('/SECURITY.md');
 project.npmignore.exclude('/.gitattributes');
 project.npmignore.exclude('/.gitpod.yml');
+
+// integ test
+const pythonCompatTask = project.addTask('integ:python-compat', {
+  exec: 'scripts/python-compat.sh',
+  description: 'Checks that projen\'s submodule structure does not cause import failures for python. Expects python to be installed and projen to be fully built.',
+});
+const integTask = project.addTask('integ');
+integTask.spawn(project.buildTask);
+integTask.spawn(pythonCompatTask);
+
+new github.TaskWorkflow(project.github, {
+  name: 'integ',
+  jobId: 'integ',
+  triggers: {
+    pullRequest: {},
+    workflowDispatch: {},
+  },
+  env: {
+    CI: 'true',
+  },
+  permissions: {
+    contents: workflows.JobPermission.READ,
+  },
+
+  preBuildSteps: [
+    ...project.installWorkflowSteps, // install dependencies for projen
+    {
+      name: 'Set up Python 3.x',
+      uses: 'actions/setup-python@v2',
+      with: {
+        'python-version': '3.x',
+      },
+    },
+    {
+      name: 'Set up Go 1.16',
+      uses: 'actions/setup-go@v2',
+      with: {
+        'go-version': '^1.16.0',
+      },
+    },
+  ],
+
+  task: integTask,
+});
 
 project.synth();

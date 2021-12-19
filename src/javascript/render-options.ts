@@ -1,5 +1,5 @@
 import * as inventory from '../inventory';
-import { NewProjectOptionHints } from '../option-hints';
+import { InitProjectOptionHints } from '../option-hints';
 
 const PROJEN_NEW = '__new__';
 const TAB = makePadding(2);
@@ -20,9 +20,9 @@ export interface RenderProjectOptions {
 
   /**
    * Include commented out options.
-   * @default NewProjectOptionHints.FEATURED
+   * @default InitProjectOptionHints.FEATURED
    */
-  readonly comments?: NewProjectOptionHints;
+  readonly comments?: InitProjectOptionHints;
 
   /**
    * Inject a `__new__` attribute to the project constructor with a stringified
@@ -33,13 +33,19 @@ export interface RenderProjectOptions {
    * @default false
    */
   readonly bootstrap?: boolean;
+
+  /**
+   * A list of fields to omit from the initial projenrc file.
+   * @default - none
+   */
+  readonly omitFromBootstrap?: string[];
 }
 
 /**
  * Information passed from `projen new` to the project object when the project
  * is first created. It is used to generate projenrc files in various languages.
  */
-interface ProjenNew {
+interface ProjenInit {
   /**
    * The JSII FQN of the project type.
    */
@@ -53,22 +59,22 @@ interface ProjenNew {
   /**
    * Include commented out options. Does not apply to projenrc.json files.
    */
-  readonly comments: NewProjectOptionHints;
+  readonly comments: InitProjectOptionHints;
 }
 
 
 /**
  * Renders options as if the project was created via `projen new` (embeds the __new__ field).
  */
-export function renderProjenNewOptions(fqn: string, args: Record<string, any>, comments: NewProjectOptionHints = NewProjectOptionHints.NONE): any {
+export function renderProjenInitOptions(fqn: string, args: Record<string, any>, comments: InitProjectOptionHints = InitProjectOptionHints.NONE): any {
   return {
     ...args,
-    [PROJEN_NEW]: { fqn, args, comments } as ProjenNew,
+    [PROJEN_NEW]: { fqn, args, comments } as ProjenInit,
   };
 }
 
-export function resolveNewProject(opts: any) {
-  const f = opts[PROJEN_NEW] as ProjenNew;
+export function resolveInitProject(opts: any) {
+  const f = opts[PROJEN_NEW] as ProjenInit;
   if (!f) {
     return undefined;
   }
@@ -97,8 +103,7 @@ export function resolveNewProject(opts: any) {
 export function renderJavaScriptOptions(opts: RenderProjectOptions) {
   const renders: Record<string, string> = {};
   const optionsWithDefaults: string[] = [];
-  const useSingleQuotes = (str: string | undefined) => str?.replace(/"(.+)"/, '\'$1\'');
-  const imports = new Set();
+  const allImports = new Set();
 
   for (const option of opts.type.options) {
     if (option.deprecated) {
@@ -109,19 +114,24 @@ export function renderJavaScriptOptions(opts: RenderProjectOptions) {
 
     if (opts.args[optionName] !== undefined) {
       const arg = opts.args[optionName];
-      const { js, importName } = renderArgAsJavaScript(arg, option);
-      if (importName) imports.add(importName);
-      renders[optionName] = `${optionName}: ${useSingleQuotes(js)},`;
+      const { js, imports } = renderArgAsJavaScript(arg, option);
+      for (const importStr of imports) {
+        allImports.add(importStr);
+      }
+      renders[optionName] = `${optionName}: ${js},`;
       optionsWithDefaults.push(optionName);
     } else {
       const defaultValue = option.default?.startsWith('-') ? undefined : (option.default ?? undefined);
-      renders[optionName] = `// ${optionName}: ${useSingleQuotes(defaultValue)},`;
+      renders[optionName] = `// ${optionName}: ${defaultValue},`;
     }
   }
 
   const bootstrap = opts.bootstrap ?? false;
   if (bootstrap) {
-    renders[PROJEN_NEW] = `${PROJEN_NEW}: ${JSON.stringify({ args: opts.args, fqn: opts.type.fqn, comments: opts.comments } as ProjenNew)},`;
+    for (const arg of (opts.omitFromBootstrap ?? [])) {
+      delete opts.args[arg];
+    }
+    renders[PROJEN_NEW] = `${PROJEN_NEW}: ${JSON.stringify({ args: opts.args, fqn: opts.type.fqn, comments: opts.comments } as ProjenInit)},`;
     optionsWithDefaults.push(PROJEN_NEW);
   }
 
@@ -139,13 +149,13 @@ export function renderJavaScriptOptions(opts: RenderProjectOptions) {
   }
 
   // render options without defaults as comments
-  if (opts.comments === NewProjectOptionHints.ALL) {
+  if (opts.comments === InitProjectOptionHints.ALL) {
     const options = opts.type.options.filter((opt) => !opt.deprecated && opts.args[opt.name] === undefined);
     result.push(...renderCommentedOptionsByModule(renders, options));
-  } else if (opts.comments === NewProjectOptionHints.FEATURED) {
+  } else if (opts.comments === InitProjectOptionHints.FEATURED) {
     const options = opts.type.options.filter((opt) => !opt.deprecated && opts.args[opt.name] === undefined && opt.featured);
     result.push(...renderCommentedOptionsInOrder(renders, options));
-  } else if (opts.comments === NewProjectOptionHints.NONE) {
+  } else if (opts.comments === InitProjectOptionHints.NONE) {
     // don't render any extra options
   }
 
@@ -153,7 +163,7 @@ export function renderJavaScriptOptions(opts: RenderProjectOptions) {
     result.pop();
   }
   result.push('}');
-  return { renderedOptions: result.join('\n'), imports };
+  return { renderedOptions: result.join('\n'), imports: allImports };
 }
 
 function renderCommentedOptionsByModule(renders: Record<string, string>, options: inventory.ProjectOption[]) {
@@ -195,17 +205,15 @@ function renderCommentedOptionsInOrder(renders: Record<string, string>, options:
 }
 
 /**
- * Renders a CLI argument as a basic JavaScript value. It must either be a
- * string, number, boolean, or enum.
+ * Renders a value as a JavaScript value, converting strings to enums where
+ * appropriate. The type must be JSON-like (string, number, boolean, array,
+ * enum, or JSON object).
  *
- * Returns a string and the name of any needed imports if needed as an
- * object in the form { js, import }.
+ * Returns a JavaScript expression as a string, and the names of any
+ * necessary imports.
  */
 function renderArgAsJavaScript(arg: any, option: inventory.ProjectOption) {
-  // devDeps added as an exception to handle bootstrapping projects from external modules
-  if (['string', 'number', 'boolean'].includes(option.type) || option.name === 'devDeps') {
-    return { js: JSON.stringify(arg) };
-  } else if (option.kind === 'enum') {
+  if (option.kind === 'enum') {
     if (!option.fqn) {
       throw new Error(`fqn field is missing from enum option ${option.name}`);
     }
@@ -213,9 +221,11 @@ function renderArgAsJavaScript(arg: any, option: inventory.ProjectOption) {
     const enumChoice = String(arg).toUpperCase().replace(/-/g, '_'); // custom-value -> CUSTOM_VALUE
     const js = `${parts.slice(1).join('.')}.${enumChoice}`; // -> web.MyEnum.CUSTOM_VALUE
     const importName = parts[1]; // -> web
-    return { js, importName: importName };
+    return { js, imports: [importName] };
+  } else if (option.jsonLike) {
+    return { js: JSON.stringify(arg), imports: [] };
   } else {
-    throw new Error(`Unexpected option ${option.name} of kind: ${option.kind}`);
+    throw new Error(`Unexpected option ${option.name} - cannot render a value for this option because it does not have a JSON-like type.`);
   }
 }
 

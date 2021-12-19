@@ -1,11 +1,10 @@
 import * as path from 'path';
 import { Component } from '../component';
 import { FileBase, FileBaseOptions, IResolver } from '../file';
-import { NodeProject, NodeProjectOptions } from '../node-project';
+import { NodeProject, NodeProjectOptions, TypeScriptJsxMode, TypeScriptModuleResolution } from '../javascript';
 import { SampleDir } from '../sample-file';
 import { SourceCode } from '../source-code';
 import { TypeScriptAppProject, TypeScriptProjectOptions } from '../typescript';
-import { TypeScriptJsxMode, TypeScriptModuleResolution } from '../typescript-config';
 import { deepMerge } from '../util';
 
 export interface ReactRewireOptions {
@@ -220,7 +219,7 @@ export class ReactComponent extends Component {
       exec: `${reactScripts} start`,
     });
 
-    project.buildTask.exec(`${reactScripts} build`);
+    project.compileTask.exec(`${reactScripts} build`);
 
     project.addTask('eject', {
       description: 'Ejects your React application from react-scripts',

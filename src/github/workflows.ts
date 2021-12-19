@@ -1,6 +1,4 @@
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-import decamelize = require('decamelize');
-
+import { snake } from 'case';
 import { Component } from '../component';
 import { kebabCaseKeys } from '../util';
 import { YamlFile } from '../yaml';
@@ -18,6 +16,13 @@ export interface GithubWorkflowOptions {
    * @default false
    */
   readonly force?: boolean;
+  /**
+   * Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time. Currently in beta.
+   *
+   * @default - disabled
+   * @see https://docs.github.com/en/actions/learn-github-actions/workflow-syntax-for-github-actions#concurrency
+   */
+  readonly concurrency?: string;
 }
 
 /**
@@ -32,9 +37,16 @@ export class GithubWorkflow extends Component {
    * The name of the workflow.
    */
   public readonly name: string;
+  /**
+   * Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.
+   *
+   * @default disabled
+   * @experimental
+   */
+  public readonly concurrency?: string;
 
   /**
-   * The workflow YAML file.
+   * The workflow YAML file. May not exist if `workflowsEnabled` is false on `GitHub`.
    */
   public readonly file: YamlFile | undefined;
 
@@ -45,8 +57,9 @@ export class GithubWorkflow extends Component {
     super(github.project);
 
     this.name = name;
+    this.concurrency = options.concurrency;
 
-    const workflowsEnabled = github.workflows || options.force;
+    const workflowsEnabled = github.workflowsEnabled || options.force;
 
     if (workflowsEnabled) {
       this.file = new YamlFile(this.project, `.github/workflows/${name.toLocaleLowerCase()}.yml`, {
@@ -81,6 +94,13 @@ export class GithubWorkflow extends Component {
       }
     }
 
+    // verify that job has a "runsOn" statement to ensure a worker can be selected appropriately
+    for (const [id, job] of Object.entries(jobs)) {
+      if (job.runsOn.length === 0) {
+        throw new Error(`${id}: at least one runner selector labels must be provided in "runsOn" to ensure a runner instance can be selected`);
+      }
+    }
+
     this.jobs = {
       ...this.jobs,
       ...jobs,
@@ -91,6 +111,7 @@ export class GithubWorkflow extends Component {
     return {
       name: this.name,
       on: snakeCaseKeys(this.events),
+      concurrency: this.concurrency,
       jobs: renderJobs(this.jobs),
     };
   }
@@ -110,7 +131,7 @@ function snakeCaseKeys<T = unknown>(obj: T): T {
     if (typeof v === 'object' && v != null) {
       v = snakeCaseKeys(v);
     }
-    result[decamelize(k)] = v;
+    result[snake(k)] = v;
   }
   return result as any;
 }
@@ -127,7 +148,7 @@ function renderJobs(jobs: Record<string, workflows.Job>) {
     return {
       'name': job.name,
       'needs': arrayOrScalar(job.needs),
-      'runs-on': job.runsOn,
+      'runs-on': arrayOrScalar(job.runsOn),
       'permissions': kebabCaseKeys(job.permissions),
       'environment': job.environment,
       'concurrency': job.concurrency,
@@ -193,4 +214,11 @@ function arrayOrScalar<T>(arr: T[] | undefined): T | T[] | undefined {
     return arr[0];
   }
   return arr;
+}
+
+export interface IJobProvider {
+  /**
+   * Generates a collection of named GitHub workflow jobs.
+   */
+  renderJobs(): Record<string, workflows.Job>;
 }

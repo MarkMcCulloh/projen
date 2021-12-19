@@ -1,8 +1,7 @@
 import { Component } from '../component';
-import { NodeProject, NodeProjectOptions } from '../node-project';
+import { NodeProject, NodeProjectOptions, TypeScriptJsxMode, TypeScriptModuleResolution } from '../javascript';
 import { SampleDir, SampleFile } from '../sample-file';
 import { TypeScriptAppProject, TypeScriptProjectOptions } from '../typescript';
-import { TypeScriptJsxMode, TypeScriptModuleResolution } from '../typescript-config';
 import { deepMerge } from '../util';
 import { PostCss } from './postcss';
 
@@ -210,7 +209,7 @@ export class NextComponent extends Component {
       exec: 'next dev',
     });
 
-    project.buildTask.exec('next build');
+    project.compileTask.exec('next build');
 
     project.addTask('export', {
       description: 'Exports the application for production deployment',

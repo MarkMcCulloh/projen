@@ -5,7 +5,7 @@ import * as fs from 'fs-extra';
 import { PROJEN_RC } from '../common';
 import * as logging from '../logging';
 import { Project } from '../project';
-import { TaskRuntime } from '../tasks';
+import { TaskRuntime } from '../task-runtime';
 
 const projenModule = path.dirname(require.resolve('../../package.json'));
 
@@ -79,7 +79,7 @@ export async function synth(runtime: TaskRuntime, options: SynthOptions) {
 
       throw new Error('Unable to find a task named "default"');
     } catch (e) {
-      logging.error(`Synthesis failed: ${e.message}`);
+      logging.error(`Synthesis failed: ${(e as any).message}`);
       return false;
     }
   }
@@ -119,7 +119,14 @@ export async function synth(runtime: TaskRuntime, options: SynthOptions) {
       fs.symlinkSync(projenModule, projenModulePath, (os.platform() === 'win32') ? 'junction' : null);
     }
 
-    spawnSync(process.execPath, [rcfile], { stdio: 'inherit' });
+    const ret = spawnSync(process.execPath, [rcfile], { stdio: ['inherit', 'inherit', 'pipe'] });
+    if (ret.error) {
+      throw new Error(`Synthesis failed: ${ret.error}`);
+    } else if (ret.status !== 0) {
+      logging.error(ret.stderr.toString());
+      throw new Error(`Synthesis failed: calling "${process.execPath} ${rcfile}" exited with status=${ret.status}`);
+    }
+
     return true;
   }
 }

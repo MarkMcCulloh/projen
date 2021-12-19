@@ -1,13 +1,11 @@
 import { dirname, join } from 'path';
+import { snake } from 'case';
 import { existsSync, mkdirpSync, writeFileSync } from 'fs-extra';
 import { PROJEN_VERSION } from '../common';
 import { Component } from '../component';
-import { DependencyType } from '../deps';
+import { DependencyType } from '../dependencies';
 import { readJsiiManifest } from '../inventory';
 import { Project } from '../project';
-
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const decamelize = require('decamelize');
 
 /**
  * Options for `Projenrc`.
@@ -41,21 +39,20 @@ export class Projenrc extends Component {
   constructor(project: Project, options: ProjenrcOptions = {}) {
     super(project);
 
-    const projenVersion = options.projenVersion ?? PROJEN_VERSION; // ?
+    const projenVersion = options.projenVersion ?? PROJEN_VERSION;
     this.rcfile = options.filename ?? '.projenrc.py';
 
     project.deps.addDependency(`projen@${projenVersion}`, DependencyType.DEVENV);
 
     // set up the "default" task which is the task executed when `projen` is executed for this project.
-    const defaultTask = project.addTask(Project.DEFAULT_TASK, { description: 'Synthesize the project' });
-    defaultTask.exec('python projenrc.py');
+    project.defaultTask.exec('python .projenrc.py');
 
     // if this is a new project, generate a skeleton for projenrc.py
     this.generateProjenrc();
   }
 
   private generateProjenrc() {
-    const bootstrap = this.project.newProject;
+    const bootstrap = this.project.initProject;
     if (!bootstrap) {
       return;
     }
@@ -96,9 +93,9 @@ export class Projenrc extends Component {
       emit(toPythonImport(fqn));
     }
     emit();
-    emit(`project = ${jsiiType.name}(${renderedOptions});`);
+    emit(`project = ${jsiiType.name}(${renderedOptions})`);
     emit();
-    emit('project.synth();');
+    emit('project.synth()');
 
     mkdirpSync(dirname(pythonFile));
     writeFileSync(pythonFile, lines.join('\n'));
@@ -126,7 +123,7 @@ function renderPythonOptions(indent: number, optionFqns: Record<string, string>,
 }
 
 function toPythonProperty(prop: string) {
-  return decamelize(prop);
+  return snake(prop);
 }
 
 function toPythonValue(value: any, name: string, optionFqns: Record<string, string>) {

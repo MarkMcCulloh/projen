@@ -6,8 +6,8 @@ import { InitProjectOptionHints } from '../../option-hints';
 import { Projects } from '../../projects';
 import { exec, isTruthy } from '../../util';
 import { tryProcessMacro } from '../macros';
-import { installPackage, renderInstallCommand } from '../util';
 import { addArgsFromPrompt } from '../prompt';
+import { installPackage, renderInstallCommand } from '../util';
 
 class Command implements yargs.CommandModule {
   public readonly command = 'new [PROJECT-TYPE-NAME] [OPTIONS]';

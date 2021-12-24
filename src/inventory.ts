@@ -24,6 +24,7 @@ export interface ProjectOption {
   optional?: boolean;
   deprecated?: boolean;
   featured?: boolean;
+  prompt: RawPromptInfo;
 }
 
 export interface ProjectType {
@@ -78,6 +79,12 @@ export interface JsiiPropertyType {
     elementtype: JsiiPropertyType;
     kind: string;
   };
+}
+
+export interface RawPromptInfo {
+  type?: string;
+  message?: string;
+  choices?: string[];
 }
 
 /**
@@ -285,6 +292,11 @@ function discoverOptions(jsii: JsiiTypes, fqn: string): ProjectOption[] {
         optional: isOptional,
         featured: prop.docs?.custom?.featured === 'true',
         deprecated: prop.docs.stability === 'deprecated' ? true : undefined,
+        prompt: {
+          type: prop.docs.custom.promptType,
+          message: prop.docs.custom.promptMessage,
+          choices: prop.docs.custom.promptChoices?.split(',')
+        }
       });
     }
 

@@ -35,6 +35,7 @@ const project = new cdk.JsiiProject({
     'xmlbuilder2',
     'ini',
     'shx',
+    'prompts',
   ],
 
   devDeps: [
@@ -44,6 +45,7 @@ const project = new cdk.JsiiProject({
     '@types/glob',
     '@types/semver',
     '@types/ini',
+    '@types/prompts',
     'markmac',
     'all-contributors-cli',
   ],

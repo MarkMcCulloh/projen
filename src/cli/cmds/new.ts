@@ -7,6 +7,7 @@ import { Projects } from '../../projects';
 import { exec, isTruthy } from '../../util';
 import { tryProcessMacro } from '../macros';
 import { installPackage, renderInstallCommand } from '../util';
+import { addArgsFromPrompt } from '../prompt';
 
 class Command implements yargs.CommandModule {
   public readonly command = 'new [PROJECT-TYPE-NAME] [OPTIONS]';
@@ -227,6 +228,8 @@ async function initProjectFromModule(baseDir: string, spec: string, args: any) {
  * @param additionalProps Additional parameters to include in .projenrc.js
  */
 async function initProject(baseDir: string, type: inventory.ProjectType, args: any) {
+  await addArgsFromPrompt(type, args);
+
   // convert command line arguments to project props using type information
   const props = commandLineToProps(baseDir, type, args);
 

@@ -1,4 +1,4 @@
-import prompts, { PromptObject } from "prompts";
+import * as prompts from "prompts";
 import { ProjectType } from "../inventory";
 
 export interface PromptInfo {
@@ -7,16 +7,18 @@ export interface PromptInfo {
     choices?: string[];
   }
 
-export async function createOptionsPrompt(projectType: ProjectType) {
+export async function addArgsFromPrompt(projectType: ProjectType, args: Record<string, any>) {
     const promptObjects: any[] = [];
 
+    const showOptionalPrompts = !!args.prompt
+
     for (const option of projectType.options) {
-        if(option.featured) {
+        if(args[option.switch] === undefined && option.featured && (!option.optional || (option.optional && showOptionalPrompts))) {
             const basePrompt = option.prompt;
             let type = option.prompt.type;
             let message = option.prompt.message;
             let choices = option.prompt.choices;
-            let name = option.name;
+            let name = option.switch;
 
             if(!type) {
                 // figure out best type
@@ -51,7 +53,7 @@ export async function createOptionsPrompt(projectType: ProjectType) {
         }
     }
     
-    const response = await prompts(promptObjects);
-    
-    console.log(response);
+    const promptResults = await prompts(promptObjects);
+
+    Object.assign(args, promptResults)
 }

@@ -228,7 +228,10 @@ async function initProjectFromModule(baseDir: string, spec: string, args: any) {
  * @param additionalProps Additional parameters to include in .projenrc.js
  */
 async function initProject(baseDir: string, type: inventory.ProjectType, args: any) {
-  await addArgsFromPrompt(type, args);
+  if (!await addArgsFromPrompt(type, args)) {
+    console.log('Canceled');
+    return;
+  }
 
   // convert command line arguments to project props using type information
   const props = commandLineToProps(baseDir, type, args);

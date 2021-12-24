@@ -7,29 +7,20 @@ export async function addArgsFromPrompt(projectType: ProjectType, args: Record<s
   const showOptionalPrompts = !!args.prompt;
 
   for (const option of projectType.options) {
-    if (args[option.switch] === undefined && option.featured && (!option.optional || (option.optional && showOptionalPrompts))) {
+    const noArgAvailable = args[option.switch] === undefined;
+    const hasDefaultValue = option.default !== undefined;
+    if (option.featured && noArgAvailable && ((!option.optional && !hasDefaultValue) || (option.optional && showOptionalPrompts))) {
       let name = option.switch;
+      let message = `${option.name} - ${option.docs ?? ''}\n[${option.default ?? ''}]`.trim();
       let type;
-      let message;
-      let choices;
 
-      if (!type) {
-        // figure out best type
-        if (option.simpleType === 'string') {
-          type = 'text';
-        } else if (option.simpleType === 'boolean') {
-          type = 'toggle';
-        } else if (option.simpleType === 'number') {
-          type = 'number';
-        }
-      }
-
-      if (!message) {
-        message = option.name;
-      }
-
-      if (!choices) {
-        // TODO Get enum values
+      // figure out best type
+      if (option.simpleType === 'string') {
+        type = 'text';
+      } else if (option.simpleType === 'boolean') {
+        type = 'toggle';
+      } else if (option.simpleType === 'number') {
+        type = 'number';
       }
 
       if (type) {
@@ -37,13 +28,20 @@ export async function addArgsFromPrompt(projectType: ProjectType, args: Record<s
           name,
           type,
           message,
-          choices,
         });
       }
     }
   }
 
-  const promptResults = await prompts(promptObjects);
+  let result = true;
+
+  const promptResults = await prompts(promptObjects, {
+    onCancel: () => {
+      result = false;
+    },
+  });
 
   Object.assign(args, promptResults);
+
+  return result;
 }

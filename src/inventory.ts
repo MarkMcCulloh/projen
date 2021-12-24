@@ -293,9 +293,9 @@ function discoverOptions(jsii: JsiiTypes, fqn: string): ProjectOption[] {
         featured: prop.docs?.custom?.featured === 'true',
         deprecated: prop.docs.stability === 'deprecated' ? true : undefined,
         prompt: {
-          type: prop.docs.custom.promptType,
-          message: prop.docs.custom.promptMessage,
-          choices: prop.docs.custom.promptChoices?.split(',')
+          type: prop.docs?.custom?.promptType,
+          message: prop.docs?.custom?.promptMessage,
+          choices: prop.docs?.custom?.promptChoices?.split(',')
         }
       });
     }

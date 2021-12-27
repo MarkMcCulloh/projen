@@ -1,0 +1,16 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`creating node project with prompts 1`] = `
+"const { javascript } = require(\\"projen\\");
+const project = new javascript.NodeProject({
+  defaultReleaseBranch: \\"main\\",
+  description: \\"h\\",
+  name: \\"my-project\\",
+  packageName: \\"h\\",
+  release: false,
+
+  // deps: [],     /* Runtime dependencies of this module. */
+  // devDeps: [],  /* Build dependencies for this module. */
+});
+project.synth();"
+`;

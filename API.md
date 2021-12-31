@@ -79,6 +79,7 @@ Name|Description
 [javascript.NodePackage](#projen-javascript-nodepackage)|Represents the npm `package.json` file.
 [javascript.NodeProject](#projen-javascript-nodeproject)|Node.js project.
 [javascript.NpmConfig](#projen-javascript-npmconfig)|File representing the local NPM config in .npmrc.
+[javascript.Prettier](#projen-javascript-prettier)|Represents prettier configuration.
 [javascript.Projenrc](#projen-javascript-projenrc)|Sets up a javascript project to use TypeScript for projenrc.
 [javascript.TypescriptConfig](#projen-javascript-typescriptconfig)|*No description*
 [javascript.UpgradeDependencies](#projen-javascript-upgradedependencies)|Upgrade node project dependencies.
@@ -228,9 +229,11 @@ Name|Description
 [javascript.JestOptions](#projen-javascript-jestoptions)|*No description*
 [javascript.NodePackageOptions](#projen-javascript-nodepackageoptions)|*No description*
 [javascript.NodeProjectOptions](#projen-javascript-nodeprojectoptions)|*No description*
-[javascript.NodeWorkflowSteps](#projen-javascript-nodeworkflowsteps)|*No description*
 [javascript.NpmConfigOptions](#projen-javascript-npmconfigoptions)|Options to configure the local NPM config.
 [javascript.PeerDependencyOptions](#projen-javascript-peerdependencyoptions)|*No description*
+[javascript.PrettierBaseOptions](#projen-javascript-prettierbaseoptions)|Options to set in Prettier directly or through overrides.
+[javascript.PrettierOptions](#projen-javascript-prettieroptions)|Options for Prettier.
+[javascript.PrettierOverride](#projen-javascript-prettieroverride)|*No description*
 [javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)|*No description*
 [javascript.TypeScriptCompilerOptions](#projen-javascript-typescriptcompileroptions)|*No description*
 [javascript.TypescriptConfigOptions](#projen-javascript-typescriptconfigoptions)|*No description*
@@ -296,6 +299,7 @@ Name|Description
 [IDockerComposeVolumeConfig](#projen-idockercomposevolumeconfig)|Storage for volume configuration.
 [IResolvable](#projen-iresolvable)|*No description*
 [IResolver](#projen-iresolver)|API for resolving tokens when synthesizing file content.
+[github.IAddConditionsLater](#projen-github-iaddconditionslater)|*No description*
 [github.IJobProvider](#projen-github-ijobprovider)|*No description*
 [python.IPackageProvider](#projen-python-ipackageprovider)|*No description*
 [python.IPythonDeps](#projen-python-ipythondeps)|*No description*
@@ -321,9 +325,16 @@ Name|Description
 [github.DependabotRegistryType](#projen-github-dependabotregistrytype)|Each configuration type requires you to provide particular settings.
 [github.DependabotScheduleInterval](#projen-github-dependabotscheduleinterval)|How often to check for new versions and raise pull requests for version updates.
 [github.VersioningStrategy](#projen-github-versioningstrategy)|The strategy to use when edits manifest and lock files.
+[javascript.ArrowParens](#projen-javascript-arrowparens)|*No description*
 [javascript.AutoRelease](#projen-javascript-autorelease)|Automatic bump modes.
+[javascript.EmbeddedLanguageFormatting](#projen-javascript-embeddedlanguageformatting)|*No description*
+[javascript.EndOfLine](#projen-javascript-endofline)|*No description*
+[javascript.HTMLWhitespaceSensitivity](#projen-javascript-htmlwhitespacesensitivity)|*No description*
 [javascript.NodePackageManager](#projen-javascript-nodepackagemanager)|The node package manager to use.
 [javascript.NpmAccess](#projen-javascript-npmaccess)|Npm package access level.
+[javascript.ProseWrap](#projen-javascript-prosewrap)|*No description*
+[javascript.QuoteProps](#projen-javascript-quoteprops)|*No description*
+[javascript.TrailingComma](#projen-javascript-trailingcomma)|*No description*
 [javascript.TypeScriptJsxMode](#projen-javascript-typescriptjsxmode)|Determines how JSX should get transformed into valid JavaScript.
 [javascript.TypeScriptModuleResolution](#projen-javascript-typescriptmoduleresolution)|Determines how modules get resolved.
 [vscode.InternalConsoleOptions](#projen-vscode-internalconsoleoptions)|Controls the visibility of the VSCode Debug Console panel during a debugging session Source: https://code.visualstudio.com/docs/editor/debugging#_launchjson-attributes.
@@ -810,6 +821,7 @@ Name | Type | Description
 **executable**🔹 | <code>boolean</code> | Indicates if the file should be marked as executable.
 **path**🔹 | <code>string</code> | The file path, relative to the project root.
 **readonly**🔹 | <code>boolean</code> | Indicates if the file should be read-only or read-write.
+**changed**?🔹 | <code>boolean</code> | Indicates if the file has been changed during synthesis.<br/>__*Optional*__
 *static* **PROJEN_MARKER**🔹 | <code>string</code> | The marker to embed in files in order to identify them as projen files.
 
 ### Methods
@@ -1198,6 +1210,7 @@ new JsonFile(project: Project, filePath: string, options: JsonFileOptions)
   * **marker** (<code>boolean</code>)  Adds the projen marker to the file. __*Default*__: true
   * **obj** (<code>any</code>)  The object that will be serialized. __*Default*__: {} an empty object (use `file.obj` to mutate).
   * **omitEmpty** (<code>boolean</code>)  Omits empty objects and arrays. __*Default*__: false
+  * **newline** (<code>boolean</code>)  Adds a newline at the end of the file. __*Default*__: true
 
 
 ### Methods
@@ -2906,6 +2919,7 @@ new awscdk.AwsCdkConstructLibrary(options: AwsCdkConstructLibraryOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -2917,6 +2931,8 @@ new awscdk.AwsCdkConstructLibrary(options: AwsCdkConstructLibraryOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -2941,7 +2957,6 @@ new awscdk.AwsCdkConstructLibrary(options: AwsCdkConstructLibraryOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -2982,6 +2997,9 @@ new awscdk.AwsCdkConstructLibrary(options: AwsCdkConstructLibraryOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -3197,6 +3215,7 @@ new awscdk.AwsCdkJavaApp(options: AwsCdkJavaAppOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -3220,7 +3239,7 @@ new awscdk.AwsCdkJavaApp(options: AwsCdkJavaAppOptions)
   * **sampleJavaPackage** (<code>string</code>)  The java package to use for the code sample. __*Default*__: "org.acme"
   * **buildCommand** (<code>string</code>)  A command to execute before synthesis. __*Default*__: no build command
   * **cdkout** (<code>string</code>)  cdk.out directory. __*Default*__: "cdk.out"
-  * **context** (<code>Map<string, string></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
+  * **context** (<code>Map<string, any></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
   * **featureFlags** (<code>boolean</code>)  Include all feature flags in cdk.json. __*Default*__: true
   * **requireApproval** (<code>[awscdk.ApprovalLevel](#projen-awscdk-approvallevel)</code>)  To protect you against unintended changes that affect your security posture, the AWS CDK Toolkit prompts you to approve security-related changes before deploying them. __*Default*__: ApprovalLevel.BROADENING
   * **watchExcludes** (<code>Array<string></code>)  Glob patterns to exclude from `cdk watch`. __*Default*__: []
@@ -3296,6 +3315,7 @@ new awscdk.AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -3307,6 +3327,8 @@ new awscdk.AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -3331,7 +3353,6 @@ new awscdk.AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -3372,6 +3393,9 @@ new awscdk.AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -3405,7 +3429,7 @@ new awscdk.AwsCdkTypeScriptApp(options: AwsCdkTypeScriptAppOptions)
   * **typescriptVersion** (<code>string</code>)  TypeScript version to use. __*Default*__: "latest"
   * **buildCommand** (<code>string</code>)  A command to execute before synthesis. __*Default*__: no build command
   * **cdkout** (<code>string</code>)  cdk.out directory. __*Default*__: "cdk.out"
-  * **context** (<code>Map<string, string></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
+  * **context** (<code>Map<string, any></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
   * **featureFlags** (<code>boolean</code>)  Include all feature flags in cdk.json. __*Default*__: true
   * **requireApproval** (<code>[awscdk.ApprovalLevel](#projen-awscdk-approvallevel)</code>)  To protect you against unintended changes that affect your security posture, the AWS CDK Toolkit prompts you to approve security-related changes before deploying them. __*Default*__: ApprovalLevel.BROADENING
   * **watchExcludes** (<code>Array<string></code>)  Glob patterns to exclude from `cdk watch`. __*Default*__: []
@@ -3474,7 +3498,7 @@ new awscdk.CdkConfig(project: Project, options: CdkConfigOptions)
 * **options** (<code>[awscdk.CdkConfigOptions](#projen-awscdk-cdkconfigoptions)</code>)  *No description*
   * **buildCommand** (<code>string</code>)  A command to execute before synthesis. __*Default*__: no build command
   * **cdkout** (<code>string</code>)  cdk.out directory. __*Default*__: "cdk.out"
-  * **context** (<code>Map<string, string></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
+  * **context** (<code>Map<string, any></code>)  Additional context to include in `cdk.json`. __*Default*__: no additional context
   * **featureFlags** (<code>boolean</code>)  Include all feature flags in cdk.json. __*Default*__: true
   * **requireApproval** (<code>[awscdk.ApprovalLevel](#projen-awscdk-approvallevel)</code>)  To protect you against unintended changes that affect your security posture, the AWS CDK Toolkit prompts you to approve security-related changes before deploying them. __*Default*__: ApprovalLevel.BROADENING
   * **watchExcludes** (<code>Array<string></code>)  Glob patterns to exclude from `cdk watch`. __*Default*__: []
@@ -3523,6 +3547,7 @@ Name | Type | Description
 **destroy**🔹 | <code>[Task](#projen-task)</code> | Destroys all the stacks.
 **diff**🔹 | <code>[Task](#projen-task)</code> | Diff against production.
 **synth**🔹 | <code>[Task](#projen-task)</code> | Synthesizes your app.
+**synthSilent**🔹 | <code>[Task](#projen-task)</code> | Synthesizes your app and suppresses stdout.
 **watch**🔹 | <code>[Task](#projen-task)</code> | Watch task.
 
 
@@ -3562,6 +3587,7 @@ new awscdk.ConstructLibraryAws(options: AwsCdkConstructLibraryOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -3573,6 +3599,8 @@ new awscdk.ConstructLibraryAws(options: AwsCdkConstructLibraryOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -3597,7 +3625,6 @@ new awscdk.ConstructLibraryAws(options: AwsCdkConstructLibraryOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -3638,6 +3665,9 @@ new awscdk.ConstructLibraryAws(options: AwsCdkConstructLibraryOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -3818,7 +3848,6 @@ new build.BuildWorkflow(project: Project, options: BuildWorkflowOptions)
 * **options** (<code>[build.BuildWorkflowOptions](#projen-build-buildworkflowoptions)</code>)  *No description*
   * **artifactsDirectory** (<code>string</code>)  A name of a directory that includes build artifacts. 
   * **buildTask** (<code>[Task](#projen-task)</code>)  The task to execute in order to build the project. 
-  * **antitamper** (<code>boolean</code>)  Enable anti-tamper check. __*Default*__: true
   * **containerImage** (<code>string</code>)  The container image to use for builds. __*Default*__: the default workflow container
   * **env** (<code>Map<string, string></code>)  Build environment variables. __*Default*__: {}
   * **gitIdentity** (<code>[github.GitIdentity](#projen-github-gitidentity)</code>)  Git identity to use for the workflow. __*Default*__: default identity
@@ -3841,6 +3870,10 @@ Name | Type | Description
 #### addPostBuildJob(id, job)🔹 <a id="projen-build-buildworkflow-addpostbuildjob"></a>
 
 Adds another job to the build workflow which is executed after the build job succeeded.
+
+Jobs are executed _only_ if the build did NOT self mutate. If the build
+self-mutate, the branch will either be updated or the build will fail (in
+forks), so there is no point in executing the post-build job.
 
 ```ts
 addPostBuildJob(id: string, job: Job): void
@@ -3929,6 +3962,7 @@ new cdk.ConstructLibrary(options: ConstructLibraryOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -3940,6 +3974,8 @@ new cdk.ConstructLibrary(options: ConstructLibraryOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -3964,7 +4000,6 @@ new cdk.ConstructLibrary(options: ConstructLibraryOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -4005,6 +4040,9 @@ new cdk.ConstructLibrary(options: ConstructLibraryOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -4110,6 +4148,7 @@ new cdk.JsiiProject(options: JsiiProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -4121,6 +4160,8 @@ new cdk.JsiiProject(options: JsiiProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -4145,7 +4186,6 @@ new cdk.JsiiProject(options: JsiiProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -4186,6 +4226,9 @@ new cdk.JsiiProject(options: JsiiProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -4277,6 +4320,7 @@ new cdk8s.Cdk8sTypeScriptApp(options: Cdk8sTypeScriptAppOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -4288,6 +4332,8 @@ new cdk8s.Cdk8sTypeScriptApp(options: Cdk8sTypeScriptAppOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -4312,7 +4358,6 @@ new cdk8s.Cdk8sTypeScriptApp(options: Cdk8sTypeScriptAppOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -4353,6 +4398,9 @@ new cdk8s.Cdk8sTypeScriptApp(options: Cdk8sTypeScriptAppOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -4446,6 +4494,7 @@ new cdk8s.ConstructLibraryCdk8s(options: ConstructLibraryCdk8sOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -4457,6 +4506,8 @@ new cdk8s.ConstructLibraryCdk8s(options: ConstructLibraryCdk8sOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -4481,7 +4532,6 @@ new cdk8s.ConstructLibraryCdk8s(options: ConstructLibraryCdk8sOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -4522,6 +4572,9 @@ new cdk8s.ConstructLibraryCdk8s(options: ConstructLibraryCdk8sOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -4624,6 +4677,7 @@ new cdktf.ConstructLibraryCdktf(options: ConstructLibraryCdktfOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -4635,6 +4689,8 @@ new cdktf.ConstructLibraryCdktf(options: ConstructLibraryCdktfOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -4659,7 +4715,6 @@ new cdktf.ConstructLibraryCdktf(options: ConstructLibraryCdktfOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -4700,6 +4755,9 @@ new cdktf.ConstructLibraryCdktf(options: ConstructLibraryCdktfOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -4764,15 +4822,15 @@ __Extends__: [Component](#projen-component)
 
 
 ```ts
-new github.AutoApprove(github: GitHub, options: AutoApproveOptions)
+new github.AutoApprove(github: GitHub, options?: AutoApproveOptions)
 ```
 
 * **github** (<code>[github.GitHub](#projen-github-github)</code>)  *No description*
 * **options** (<code>[github.AutoApproveOptions](#projen-github-autoapproveoptions)</code>)  *No description*
-  * **secret** (<code>string</code>)  A GitHub secret name which contains a GitHub Access Token with write permissions for the `pull_request` scope. 
   * **allowedUsernames** (<code>Array<string></code>)  Only pull requests authored by these Github usernames will be auto-approved. __*Default*__: ['github-bot']
   * **label** (<code>string</code>)  Only pull requests with this label will be auto-approved. __*Default*__: 'auto-approve'
   * **runsOn** (<code>Array<string></code>)  Github Runner selection labels. __*Default*__: ["ubuntu-latest"]
+  * **secret** (<code>string</code>)  A GitHub secret name which contains a GitHub Access Token with write permissions for the `pull_request` scope. __*Default*__: "GITHUB_TOKEN"
 
 
 
@@ -4805,14 +4863,42 @@ __Extends__: [Component](#projen-component)
 
 
 ```ts
-new github.AutoMerge(github: GitHub, options: AutoMergeOptions)
+new github.AutoMerge(github: GitHub, options?: AutoMergeOptions)
 ```
 
 * **github** (<code>[github.GitHub](#projen-github-github)</code>)  *No description*
 * **options** (<code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code>)  *No description*
   * **approvedReviews** (<code>number</code>)  Number of approved code reviews. __*Default*__: 1
   * **blockingLabels** (<code>Array<string></code>)  List of labels that will prevent auto-merging. __*Default*__: ['do-not-merge']
-  * **buildJob** (<code>string</code>)  The GitHub job ID of the build workflow. __*Optional*__
+
+
+### Methods
+
+
+#### addConditions(...conditions)🔹 <a id="projen-github-automerge-addconditions"></a>
+
+Adds conditions to the auto merge rule.
+
+```ts
+addConditions(...conditions: string[]): void
+```
+
+* **conditions** (<code>string</code>)  The conditions to add (mergify syntax).
+
+
+
+
+#### addConditionsLater(later)🔹 <a id="projen-github-automerge-addconditionslater"></a>
+
+Adds conditions that will be rendered only during synthesis.
+
+```ts
+addConditionsLater(later: IAddConditionsLater): void
+```
+
+* **later** (<code>[github.IAddConditionsLater](#projen-github-iaddconditionslater)</code>)  The later.
+
+
 
 
 
@@ -4897,6 +4983,7 @@ new github.GitHub(project: Project, options?: GitHubOptions)
 * **options** (<code>[github.GitHubOptions](#projen-github-githuboptions)</code>)  *No description*
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for Mergify. __*Default*__: default options
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **pullRequestLint** (<code>boolean</code>)  Add a workflow that performs basic checks for pull requests, like validating that PRs follow Conventional Commits. __*Default*__: true
   * **pullRequestLintOptions** (<code>[github.PullRequestLintOptions](#projen-github-pullrequestlintoptions)</code>)  Options for configuring a pull request linter. __*Default*__: see defaults in `PullRequestLintOptions`
   * **workflows** (<code>boolean</code>)  Enables GitHub workflows. __*Default*__: true
@@ -4908,6 +4995,7 @@ new github.GitHub(project: Project, options?: GitHubOptions)
 
 Name | Type | Description 
 -----|------|-------------
+**projenTokenSecret**🔹 | <code>string</code> | The name of a secret with a GitHub Personal Access Token to be used by projen workflows.
 **workflows**🔹 | <code>Array<[github.GithubWorkflow](#projen-github-githubworkflow)></code> | All workflows.
 **workflowsEnabled**🔹 | <code>boolean</code> | Are workflows enabled?
 **mergify**?🔹 | <code>[github.Mergify](#projen-github-mergify)</code> | The `Mergify` configured on this repository.<br/>__*Optional*__
@@ -5025,6 +5113,7 @@ new github.GitHubProject(options: GitHubProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -5099,6 +5188,7 @@ new github.GithubWorkflow(github: GitHub, name: string, options?: GithubWorkflow
 Name | Type | Description 
 -----|------|-------------
 **name**🔹 | <code>string</code> | The name of the workflow.
+**projenTokenSecret**🔹 | <code>string</code> | The name of a secret that includes a PAT that can be used by workflows.
 **concurrency**?🔹 | <code>string</code> | Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.<br/>__*Default*__: disabled
 **file**?🔹 | <code>[YamlFile](#projen-yamlfile)</code> | The workflow YAML file.<br/>__*Optional*__
 
@@ -5408,6 +5498,7 @@ new java.JavaProject(options: JavaProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -6083,6 +6174,8 @@ new javascript.NodePackage(project: Project, options?: NodePackageOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -6379,6 +6472,7 @@ new javascript.NodeProject(options: NodeProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -6390,6 +6484,8 @@ new javascript.NodeProject(options: NodeProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -6414,7 +6510,6 @@ new javascript.NodeProject(options: NodeProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -6455,6 +6550,9 @@ new javascript.NodeProject(options: NodeProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -6479,8 +6577,8 @@ new javascript.NodeProject(options: NodeProjectOptions)
 Name | Type | Description 
 -----|------|-------------
 **allowLibraryDependencies**⚠️ | <code>boolean</code> | <span></span>
-**antitamper**🔹 | <code>boolean</code> | Indicates if workflows have anti-tamper checks.
 **artifactsDirectory**🔹 | <code>string</code> | The build output directory.
+**artifactsJavascriptDirectory**🔹 | <code>string</code> | The location of the npm tarball after build (`${artifactsDirectory}/js`).
 **bundler**🔹 | <code>[javascript.Bundler](#projen-javascript-bundler)</code> | <span></span>
 **entrypoint**⚠️ | <code>string</code> | <span></span>
 **installWorkflowSteps**🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | <span></span>
@@ -6495,6 +6593,8 @@ Name | Type | Description
 **maxNodeVersion**?🔹 | <code>string</code> | Maximum node version required by this pacakge.<br/>__*Optional*__
 **minNodeVersion**?🔹 | <code>string</code> | Minimum node.js version required by this package.<br/>__*Optional*__
 **npmignore**?🔹 | <code>[IgnoreFile](#projen-ignorefile)</code> | The .npmignore file.<br/>__*Optional*__
+**prettier**?🔹 | <code>[javascript.Prettier](#projen-javascript-prettier)</code> | __*Optional*__
+**prettierIgnore**?🔹 | <code>[IgnoreFile](#projen-ignorefile)</code> | The .prettierIgnore file.<br/>__*Optional*__
 **publisher**?⚠️ | <code>[release.Publisher](#projen-release-publisher)</code> | Package publisher.<br/>__*Optional*__
 **release**?🔹 | <code>[release.Release](#projen-release-release)</code> | Release management.<br/>__*Optional*__
 **upgradeWorkflow**?🔹 | <code>[javascript.UpgradeDependencies](#projen-javascript-upgradedependencies)</code> | The upgrade workflow.<br/>__*Optional*__
@@ -6629,6 +6729,19 @@ addPeerDeps(...deps: string[]): void
 
 
 
+#### addPrettierIgnore(pattern)🔹 <a id="projen-javascript-nodeproject-addprettierignore"></a>
+
+Defines Prettier ignore Patterns these patterns will be added to the file .prettierignore.
+
+```ts
+addPrettierIgnore(pattern: string): void
+```
+
+* **pattern** (<code>string</code>)  filepatterns so exclude from prettier formatting.
+
+
+
+
 #### addTestCommand(...commands)⚠️ <a id="projen-javascript-nodeproject-addtestcommand"></a>
 
 DEPRECATED.
@@ -6752,6 +6865,96 @@ addRegistry(url: string, scope?: string): void
 
 
 
+
+
+
+## class Prettier 🔹 <a id="projen-javascript-prettier"></a>
+
+Represents prettier configuration.
+
+__Submodule__: javascript
+
+__Extends__: [Component](#projen-component)
+
+### Initializer
+
+
+
+
+```ts
+new javascript.Prettier(project: NodeProject, options: PrettierOptions)
+```
+
+* **project** (<code>[javascript.NodeProject](#projen-javascript-nodeproject)</code>)  *No description*
+* **options** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  *No description*
+  * **arrowParens** (<code>[javascript.ArrowParens](#projen-javascript-arrowparens)</code>)  Include parentheses around a sole arrow function parameter. __*Default*__: ArrowParens.ALWAYS
+  * **bracketSameLine** (<code>boolean</code>)  Put > of opening tags on the last line instead of on a new line. __*Default*__: false
+  * **bracketSpacing** (<code>boolean</code>)  Print spaces between brackets. __*Default*__: true
+  * **cursorOffset** (<code>number</code>)  Print (to stderr) where a cursor at the given position would move to after formatting. __*Default*__: -1
+  * **embeddedLanguageFormatting** (<code>[javascript.EmbeddedLanguageFormatting](#projen-javascript-embeddedlanguageformatting)</code>)  Control how Prettier formats quoted code embedded in the file. __*Default*__: EmbeddedLanguageFormatting.AUTO
+  * **endOfLine** (<code>[javascript.EndOfLine](#projen-javascript-endofline)</code>)  Which end of line characters to apply. __*Default*__: EndOfLine.LF
+  * **filepath** (<code>string</code>)  Specify the input filepath. __*Default*__: none
+  * **htmlWhitespaceSensitivity** (<code>[javascript.HTMLWhitespaceSensitivity](#projen-javascript-htmlwhitespacesensitivity)</code>)  How to handle whitespaces in HTML. __*Default*__: HTMLWhitespaceSensitivity.CSS
+  * **insertPragma** (<code>boolean</code>)  Insert @format pragma into file's first docblock comment. __*Default*__: false
+  * **jsxSingleQuote** (<code>boolean</code>)  Use single quotes in JSX. __*Default*__: false
+  * **parser** (<code>string</code>)  Which parser to use. __*Default*__: Prettier automatically infers the parser from the input file path, so you shouldn’t have to change this setting.
+  * **plugins** (<code>Array<string></code>)  Add a plugin. __*Default*__: []
+  * **pluginSearchDirs** (<code>Array<string></code>)  Custom directory that contains prettier plugins in node_modules subdirectory. __*Default*__: []
+  * **printWidth** (<code>number</code>)  The line length where Prettier will try wrap. __*Default*__: 80
+  * **proseWrap** (<code>[javascript.ProseWrap](#projen-javascript-prosewrap)</code>)  How to wrap prose. __*Default*__: ProseWrap.PRESERVE
+  * **quoteProps** (<code>[javascript.QuoteProps](#projen-javascript-quoteprops)</code>)  Change when properties in objects are quoted. __*Default*__: QuoteProps.ASNEEDED
+  * **rangeEnd** (<code>number</code>)  Format code ending at a given character offset (exclusive). __*Default*__: null
+  * **rangeStart** (<code>number</code>)  Format code starting at a given character offset. __*Default*__: 0
+  * **requirePragma** (<code>boolean</code>)  Require either '@prettier' or '@format' to be present in the file's first docblock comment in order for it to be formatted. __*Default*__: false
+  * **semi** (<code>boolean</code>)  Print semicolons. __*Default*__: true
+  * **singleQuote** (<code>boolean</code>)  Use single quotes instead of double quotes. __*Default*__: false
+  * **tabWidth** (<code>number</code>)  Number of spaces per indentation level. __*Default*__: 2
+  * **trailingComma** (<code>[javascript.TrailingComma](#projen-javascript-trailingcomma)</code>)  Print trailing commas wherever possible when multi-line. __*Default*__: TrailingComma.ES5
+  * **useTabs** (<code>boolean</code>)  Indent with tabs instead of spaces. __*Default*__: false
+  * **vueIndentScriptAndStyle** (<code>boolean</code>)  Indent script and style tags in Vue files. __*Default*__: false
+  * **overrides** (<code>Array<[javascript.PrettierOverride](#projen-javascript-prettieroverride)></code>)  Provide a list of patterns to override prettier configuration. __*Default*__: []
+
+
+
+### Properties
+
+
+Name | Type | Description 
+-----|------|-------------
+**config**🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Direct access to the prettier configuration.
+**overrides**🔹 | <code>Array<[javascript.PrettierOverride](#projen-javascript-prettieroverride)></code> | Access to the Prettieroverrides to extend those.
+
+### Methods
+
+
+#### addOverride(override)🔹 <a id="projen-javascript-prettier-addoverride"></a>
+
+Add a prettier override.
+
+```ts
+addOverride(override: PrettierOverride): void
+```
+
+* **override** (<code>[javascript.PrettierOverride](#projen-javascript-prettieroverride)</code>)  *No description*
+  * **files** (<code>string &#124; Array<string></code>)  Include these files in this override. 
+  * **options** (<code>[javascript.PrettierBaseOptions](#projen-javascript-prettierbaseoptions)</code>)  The options to apply for this override. 
+  * **excludeFiles** (<code>string &#124; Array<string></code>)  Exclude these files from this override. __*Optional*__
+
+
+
+
+#### *static* of(project)🔹 <a id="projen-javascript-prettier-of"></a>
+
+
+
+```ts
+static of(project: Project): Prettier
+```
+
+* **project** (<code>[Project](#projen-project)</code>)  *No description*
+
+__Returns__:
+* <code>[javascript.Prettier](#projen-javascript-prettier)</code>
 
 
 
@@ -7273,6 +7476,7 @@ new python.PythonProject(options: PythonProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -7614,6 +7818,28 @@ Name | Type | Description
 ### Methods
 
 
+#### addGitHubPrePublishingSteps(...steps)🔹 <a id="projen-release-publisher-addgithubprepublishingsteps"></a>
+
+Adds pre publishing steps for the GitHub release job.
+
+```ts
+addGitHubPrePublishingSteps(...steps: JobStep[]): void
+```
+
+* **steps** (<code>[github.workflows.JobStep](#projen-github-workflows-jobstep)</code>)  The steps.
+  * **continueOnError** (<code>boolean</code>)  Prevents a job from failing when a step fails. __*Optional*__
+  * **env** (<code>Map<string, string></code>)  Sets environment variables for steps to use in the runner environment. __*Optional*__
+  * **id** (<code>string</code>)  A unique identifier for the step. __*Optional*__
+  * **if** (<code>string</code>)  You can use the if conditional to prevent a job from running unless a condition is met. __*Optional*__
+  * **name** (<code>string</code>)  A name for your step to display on GitHub. __*Optional*__
+  * **run** (<code>string</code>)  Runs command-line programs using the operating system's shell. __*Optional*__
+  * **timeoutMinutes** (<code>number</code>)  The maximum number of minutes to run the step before killing the process. __*Optional*__
+  * **uses** (<code>string</code>)  Selects an action to run as part of a step in your job. __*Optional*__
+  * **with** (<code>Map<string, any></code>)  A map of the input parameters defined by the action. __*Optional*__
+
+
+
+
 #### publishToGit(options)🔹 <a id="projen-release-publisher-publishtogit"></a>
 
 Publish to git.
@@ -7773,7 +7999,6 @@ new release.Release(project: GitHubProject, options: ReleaseOptions)
 
 * **project** (<code>[github.GitHubProject](#projen-github-githubproject)</code>)  *No description*
 * **options** (<code>[release.ReleaseOptions](#projen-release-releaseoptions)</code>)  *No description*
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8008,6 +8233,7 @@ new typescript.TypeScriptAppProject(options: TypeScriptProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -8019,6 +8245,8 @@ new typescript.TypeScriptAppProject(options: TypeScriptProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -8043,7 +8271,6 @@ new typescript.TypeScriptAppProject(options: TypeScriptProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8084,6 +8311,9 @@ new typescript.TypeScriptAppProject(options: TypeScriptProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -8154,6 +8384,7 @@ new typescript.TypeScriptLibraryProject(options: TypeScriptProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -8165,6 +8396,8 @@ new typescript.TypeScriptLibraryProject(options: TypeScriptProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -8189,7 +8422,6 @@ new typescript.TypeScriptLibraryProject(options: TypeScriptProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8230,6 +8462,9 @@ new typescript.TypeScriptLibraryProject(options: TypeScriptProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -8300,6 +8535,7 @@ new typescript.TypeScriptProject(options: TypeScriptProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -8311,6 +8547,8 @@ new typescript.TypeScriptProject(options: TypeScriptProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -8335,7 +8573,6 @@ new typescript.TypeScriptProject(options: TypeScriptProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8376,6 +8613,9 @@ new typescript.TypeScriptProject(options: TypeScriptProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -8691,6 +8931,7 @@ new web.NextJsProject(options: NextJsProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -8702,6 +8943,8 @@ new web.NextJsProject(options: NextJsProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -8726,7 +8969,6 @@ new web.NextJsProject(options: NextJsProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8767,6 +9009,9 @@ new web.NextJsProject(options: NextJsProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -8835,6 +9080,7 @@ new web.NextJsTypeScriptProject(options: NextJsTypeScriptProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -8846,6 +9092,8 @@ new web.NextJsTypeScriptProject(options: NextJsTypeScriptProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -8870,7 +9118,6 @@ new web.NextJsTypeScriptProject(options: NextJsTypeScriptProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -8911,6 +9158,9 @@ new web.NextJsTypeScriptProject(options: NextJsTypeScriptProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -9051,6 +9301,7 @@ new web.ReactProject(options: ReactProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -9062,6 +9313,8 @@ new web.ReactProject(options: ReactProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -9086,7 +9339,6 @@ new web.ReactProject(options: ReactProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -9127,6 +9379,9 @@ new web.ReactProject(options: ReactProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -9236,6 +9491,7 @@ new web.ReactTypeScriptProject(options: ReactTypeScriptProjectOptions)
   * **mergify** (<code>boolean</code>)  Whether mergify should be enabled on this repository or not. __*Default*__: true
   * **mergifyOptions** (<code>[github.MergifyOptions](#projen-github-mergifyoptions)</code>)  Options for mergify. __*Default*__: default options
   * **projectType** (<code>[ProjectType](#projen-projecttype)</code>)  Which type of project this is (library/app). __*Default*__: ProjectType.UNKNOWN
+  * **projenTokenSecret** (<code>string</code>)  The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows. __*Default*__: "PROJEN_GITHUB_TOKEN"
   * **readme** (<code>[SampleReadmeProps](#projen-samplereadmeprops)</code>)  The README setup. __*Default*__: { filename: 'README.md', contents: '# replace this' }
   * **stale** (<code>boolean</code>)  Auto-close of stale issues and pull request. __*Default*__: true
   * **staleOptions** (<code>[github.StaleOptions](#projen-github-staleoptions)</code>)  Auto-close stale issues and pull requests. __*Default*__: see defaults in `StaleOptions`
@@ -9247,6 +9503,8 @@ new web.ReactTypeScriptProject(options: ReactTypeScriptProjectOptions)
   * **authorUrl** (<code>string</code>)  Author's URL / Website. __*Optional*__
   * **autoDetectBin** (<code>boolean</code>)  Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section. __*Default*__: true
   * **bin** (<code>Map<string, string></code>)  Binary programs vended with your module. __*Optional*__
+  * **bugsEmail** (<code>string</code>)  The email address to which issues should be reported. __*Optional*__
+  * **bugsUrl** (<code>string</code>)  The url to your project's issue tracker. __*Optional*__
   * **bundledDeps** (<code>Array<string></code>)  List of dependencies to bundle into this module. __*Optional*__
   * **codeArtifactOptions** (<code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code>)  Options for publishing npm package to AWS CodeArtifact. __*Default*__: undefined
   * **deps** (<code>Array<string></code>)  Runtime dependencies of this module. __*Default*__: []
@@ -9271,7 +9529,6 @@ new web.ReactTypeScriptProject(options: ReactTypeScriptProjectOptions)
   * **repositoryDirectory** (<code>string</code>)  If the package.json for your package is not in the root directory (for example if it is part of a monorepo), you can specify the directory in which it lives. __*Optional*__
   * **scripts** (<code>Map<string, string></code>)  npm scripts to include. __*Default*__: {}
   * **stability** (<code>string</code>)  Package's Stability. __*Optional*__
-  * **antitamper** (<code>boolean</code>)  Checks that after build there are no modified files on git. __*Default*__: true
   * **jsiiReleaseVersion** (<code>string</code>)  Version requirement of `jsii-release` which is used to publish modules to npm. __*Default*__: "latest"
   * **majorVersion** (<code>number</code>)  Major version to release from the default branch. __*Default*__: Major version is not enforced.
   * **npmDistTag** (<code>string</code>)  The npmDistTag to use when publishing from the default branch. __*Default*__: "latest"
@@ -9312,6 +9569,9 @@ new web.ReactTypeScriptProject(options: ReactTypeScriptProjectOptions)
   * **npmignore** (<code>Array<string></code>)  Additional entries to .npmignore. __*Optional*__
   * **npmignoreEnabled** (<code>boolean</code>)  Defines an .npmignore file. Normally this is only needed for libraries that are packaged as tarballs. __*Default*__: true
   * **package** (<code>boolean</code>)  Defines a `package` task that will produce an npm tarball under the artifacts directory (e.g. `dist`). __*Default*__: true
+  * **prettier** (<code>boolean</code>)  Setup prettier. __*Default*__: false
+  * **prettierIgnoreEnabled** (<code>boolean</code>)  Defines an .prettierIgnore file. __*Default*__: false
+  * **prettierOptions** (<code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code>)  Prettier options. __*Default*__: opinionated default options
   * **projenDevDependency** (<code>boolean</code>)  Indicates of "projen" should be installed as a devDependency. __*Default*__: true
   * **projenrcJs** (<code>boolean</code>)  Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation. __*Default*__: true if projenrcJson is false
   * **projenrcJsOptions** (<code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code>)  Options for .projenrc.js. __*Default*__: default options
@@ -9902,6 +10162,7 @@ Name | Type | Description
 **editGitignore**?🔹 | <code>boolean</code> | Update the project's .gitignore file.<br/>__*Default*__: true
 **executable**?🔹 | <code>boolean</code> | Whether the generated file should be marked as executable.<br/>__*Default*__: false
 **marker**?🔹 | <code>boolean</code> | Adds the projen marker to the file.<br/>__*Default*__: true
+**newline**?🔹 | <code>boolean</code> | Adds a newline at the end of the file.<br/>__*Default*__: true
 **obj**?🔹 | <code>any</code> | The object that will be serialized.<br/>__*Default*__: {} an empty object (use `file.obj` to mutate).
 **omitEmpty**?🔹 | <code>boolean</code> | Omits empty objects and arrays.<br/>__*Default*__: false
 **readonly**?🔹 | <code>boolean</code> | Whether the generated file should be readonly.<br/>__*Default*__: true
@@ -10317,7 +10578,6 @@ Name | Type | Description
 **name**🔹 | <code>string</code> | This is the name of your project.
 **repositoryUrl**🔹 | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -10329,6 +10589,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -10402,12 +10664,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -10524,7 +10790,7 @@ Name | Type | Description
 **cdkout**?🔹 | <code>string</code> | cdk.out directory.<br/>__*Default*__: "cdk.out"
 **clobber**?🔹 | <code>boolean</code> | Add a `clobber` task which resets the repo to origin.<br/>__*Default*__: true
 **compileOptions**?🔹 | <code>[java.MavenCompileOptions](#projen-java-mavencompileoptions)</code> | Compile options.<br/>__*Default*__: defaults
-**context**?🔹 | <code>Map<string, string></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
+**context**?🔹 | <code>Map<string, any></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
 **deps**?🔹 | <code>Array<string></code> | List of runtime dependencies for this project.<br/>__*Default*__: []
 **description**?🔹 | <code>string</code> | Description of a project is always good.<br/>__*Default*__: undefined
 **devContainer**?🔹 | <code>boolean</code> | Add a VSCode development environment (used for GitHub Codespaces).<br/>__*Default*__: false
@@ -10544,6 +10810,7 @@ Name | Type | Description
 **parent**?🔹 | <code>[Project](#projen-project)</code> | The parent project, if this project is part of a bigger project.<br/>__*Optional*__
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenrcJava**?🔹 | <code>boolean</code> | Use projenrc in java.<br/>__*Default*__: true
 **projenrcJavaOptions**?🔹 | <code>[java.ProjenrcOptions](#projen-java-projenrcoptions)</code> | Options related to projenrc in java.<br/>__*Default*__: default options
 **projenrcJson**?🔹 | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.<br/>__*Default*__: false
@@ -10575,7 +10842,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **appEntrypoint**?🔹 | <code>string</code> | The CDK app's entrypoint (relative to the source directory, which is "src" by default).<br/>__*Default*__: "main.ts"
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
@@ -10588,6 +10854,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildCommand**?🔹 | <code>string</code> | A command to execute before synthesis.<br/>__*Default*__: no build command
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
@@ -10604,7 +10872,7 @@ Name | Type | Description
 **codeCov**?🔹 | <code>boolean</code> | Define a GitHub workflow step for sending code coverage metrics to https://codecov.io/ Uses codecov/codecov-action@v1 A secret is required for private repos. Configured with @codeCovTokenSecret.<br/>__*Default*__: false
 **codeCovTokenSecret**?🔹 | <code>string</code> | Define the secret name for a specified https://codecov.io/ token A secret is required to send coverage for private repositories.<br/>__*Default*__: if this option is not specified, only public repositories are supported
 **constructsVersion**?🔹 | <code>string</code> | Minimum version of the `constructs` library to depend on.<br/>__*Default*__: for CDK 1.x the default is "3.2.27", for CDK 2.x the default is "10.0.5".
-**context**?🔹 | <code>Map<string, string></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
+**context**?🔹 | <code>Map<string, any></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
 **copyrightOwner**?🔹 | <code>string</code> | License copyright owner.<br/>__*Default*__: defaults to the value of authorName or "" if `authorName` is undefined.
 **copyrightPeriod**?🔹 | <code>string</code> | The copyright years to put in the LICENSE file.<br/>__*Default*__: current year
 **dependabot**?🔹 | <code>boolean</code> | Use dependabot to handle dependency upgrades.<br/>__*Default*__: false
@@ -10660,12 +10928,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -10727,7 +10999,7 @@ Name | Type | Description
 -----|------|-------------
 **buildCommand**?🔹 | <code>string</code> | A command to execute before synthesis.<br/>__*Default*__: no build command
 **cdkout**?🔹 | <code>string</code> | cdk.out directory.<br/>__*Default*__: "cdk.out"
-**context**?🔹 | <code>Map<string, string></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
+**context**?🔹 | <code>Map<string, any></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
 **featureFlags**?🔹 | <code>boolean</code> | Include all feature flags in cdk.json.<br/>__*Default*__: true
 **requireApproval**?🔹 | <code>[awscdk.ApprovalLevel](#projen-awscdk-approvallevel)</code> | To protect you against unintended changes that affect your security posture, the AWS CDK Toolkit prompts you to approve security-related changes before deploying them.<br/>__*Default*__: ApprovalLevel.BROADENING
 **watchExcludes**?🔹 | <code>Array<string></code> | Glob patterns to exclude from `cdk watch`.<br/>__*Default*__: []
@@ -10747,7 +11019,7 @@ Name | Type | Description
 **app**🔹 | <code>string</code> | The command line to execute in order to synthesize the CDK application (language specific).
 **buildCommand**?🔹 | <code>string</code> | A command to execute before synthesis.<br/>__*Default*__: no build command
 **cdkout**?🔹 | <code>string</code> | cdk.out directory.<br/>__*Default*__: "cdk.out"
-**context**?🔹 | <code>Map<string, string></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
+**context**?🔹 | <code>Map<string, any></code> | Additional context to include in `cdk.json`.<br/>__*Default*__: no additional context
 **featureFlags**?🔹 | <code>boolean</code> | Include all feature flags in cdk.json.<br/>__*Default*__: true
 **requireApproval**?🔹 | <code>[awscdk.ApprovalLevel](#projen-awscdk-approvallevel)</code> | To protect you against unintended changes that affect your security posture, the AWS CDK Toolkit prompts you to approve security-related changes before deploying them.<br/>__*Default*__: ApprovalLevel.BROADENING
 **watchExcludes**?🔹 | <code>Array<string></code> | Glob patterns to exclude from `cdk watch`.<br/>__*Default*__: []
@@ -10771,7 +11043,6 @@ Name | Type | Description
 **name**⚠️ | <code>string</code> | This is the name of your project.
 **repositoryUrl**⚠️ | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?⚠️ | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?⚠️ | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?⚠️ | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?⚠️ | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?⚠️ | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -10783,6 +11054,8 @@ Name | Type | Description
 **autoDetectBin**?⚠️ | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?⚠️ | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?⚠️ | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?⚠️ | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?⚠️ | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?⚠️ | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?⚠️ | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?⚠️ | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -10856,9 +11129,13 @@ Name | Type | Description
 **peerDeps**?⚠️ | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?⚠️ | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?⚠️ | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?⚠️ | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?⚠️ | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?⚠️ | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?⚠️ | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?⚠️ | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?⚠️ | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?⚠️ | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
 **projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
@@ -10990,7 +11267,6 @@ Name | Type | Description
 -----|------|-------------
 **artifactsDirectory**🔹 | <code>string</code> | A name of a directory that includes build artifacts.
 **buildTask**🔹 | <code>[Task](#projen-task)</code> | The task to execute in order to build the project.
-**antitamper**?🔹 | <code>boolean</code> | Enable anti-tamper check.<br/>__*Default*__: true
 **containerImage**?🔹 | <code>string</code> | The container image to use for builds.<br/>__*Default*__: the default workflow container
 **env**?🔹 | <code>Map<string, string></code> | Build environment variables.<br/>__*Default*__: {}
 **gitIdentity**?🔹 | <code>[github.GitIdentity](#projen-github-gitidentity)</code> | Git identity to use for the workflow.<br/>__*Default*__: default identity
@@ -11029,7 +11305,6 @@ Name | Type | Description
 **name**🔹 | <code>string</code> | This is the name of your project.
 **repositoryUrl**🔹 | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -11041,6 +11316,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -11105,12 +11382,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -11242,7 +11523,6 @@ Name | Type | Description
 **name**🔹 | <code>string</code> | This is the name of your project.
 **repositoryUrl**🔹 | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -11254,6 +11534,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -11317,12 +11599,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -11408,7 +11694,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **appEntrypoint**?🔹 | <code>string</code> | The CDK8s app's entrypoint (relative to the source directory, which is "src" by default).<br/>__*Default*__: "main.ts"
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
@@ -11421,6 +11706,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -11486,12 +11773,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -11555,7 +11846,6 @@ Name | Type | Description
 **name**🔹 | <code>string</code> | This is the name of your project.
 **repositoryUrl**🔹 | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -11567,6 +11857,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -11635,12 +11927,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -11710,7 +12006,6 @@ Name | Type | Description
 **name**🔹 | <code>string</code> | This is the name of your project.
 **repositoryUrl**🔹 | <code>string</code> | Git repository URL.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -11722,6 +12017,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -11786,12 +12083,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -11854,10 +12155,10 @@ Options for 'AutoApprove'.
 
 Name | Type | Description 
 -----|------|-------------
-**secret**🔹 | <code>string</code> | A GitHub secret name which contains a GitHub Access Token with write permissions for the `pull_request` scope.
 **allowedUsernames**?🔹 | <code>Array<string></code> | Only pull requests authored by these Github usernames will be auto-approved.<br/>__*Default*__: ['github-bot']
 **label**?🔹 | <code>string</code> | Only pull requests with this label will be auto-approved.<br/>__*Default*__: 'auto-approve'
 **runsOn**?🔹 | <code>Array<string></code> | Github Runner selection labels.<br/>__*Default*__: ["ubuntu-latest"]
+**secret**?🔹 | <code>string</code> | A GitHub secret name which contains a GitHub Access Token with write permissions for the `pull_request` scope.<br/>__*Default*__: "GITHUB_TOKEN"
 
 
 
@@ -11872,7 +12173,6 @@ Name | Type | Description
 -----|------|-------------
 **approvedReviews**?🔹 | <code>number</code> | Number of approved code reviews.<br/>__*Default*__: 1
 **blockingLabels**?🔹 | <code>Array<string></code> | List of labels that will prevent auto-merging.<br/>__*Default*__: ['do-not-merge']
-**buildJob**?🔹 | <code>string</code> | The GitHub job ID of the build workflow.<br/>__*Optional*__
 
 
 
@@ -11941,6 +12241,7 @@ Name | Type | Description
 -----|------|-------------
 **mergify**?🔹 | <code>boolean</code> | Whether mergify should be enabled on this repository or not.<br/>__*Default*__: true
 **mergifyOptions**?🔹 | <code>[github.MergifyOptions](#projen-github-mergifyoptions)</code> | Options for Mergify.<br/>__*Default*__: default options
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **pullRequestLint**?🔹 | <code>boolean</code> | Add a workflow that performs basic checks for pull requests, like validating that PRs follow Conventional Commits.<br/>__*Default*__: true
 **pullRequestLintOptions**?🔹 | <code>[github.PullRequestLintOptions](#projen-github-pullrequestlintoptions)</code> | Options for configuring a pull request linter.<br/>__*Default*__: see defaults in `PullRequestLintOptions`
 **workflows**?🔹 | <code>boolean</code> | Enables GitHub workflows.<br/>__*Default*__: true
@@ -11971,6 +12272,7 @@ Name | Type | Description
 **parent**?🔹 | <code>[Project](#projen-project)</code> | The parent project, if this project is part of a bigger project.<br/>__*Optional*__
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenrcJson**?🔹 | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.<br/>__*Default*__: false
 **projenrcJsonOptions**?🔹 | <code>[ProjenrcOptions](#projen-projenrcoptions)</code> | Options for .projenrc.json.<br/>__*Default*__: default options
 **readme**?🔹 | <code>[SampleReadmeProps](#projen-samplereadmeprops)</code> | The README setup.<br/>__*Default*__: { filename: 'README.md', contents: '# replace this' }
@@ -12005,6 +12307,27 @@ Name | Type | Description
 -----|------|-------------
 **concurrency**?🔹 | <code>string</code> | Concurrency ensures that only a single job or workflow using the same concurrency group will run at a time.<br/>__*Default*__: disabled
 **force**?🔹 | <code>boolean</code> | Force the creation of the workflow even if `workflows` is disabled in `GitHub`.<br/>__*Default*__: false
+
+
+
+## interface IAddConditionsLater 🔹 <a id="projen-github-iaddconditionslater"></a>
+
+
+
+### Methods
+
+
+#### render()🔹 <a id="projen-github-iaddconditionslater-render"></a>
+
+
+
+```ts
+render(): Array<string>
+```
+
+
+__Returns__:
+* <code>Array<string></code>
 
 
 
@@ -12211,6 +12534,7 @@ Name | Type | Description
 **parent**?🔹 | <code>[Project](#projen-project)</code> | The parent project, if this project is part of a bigger project.<br/>__*Optional*__
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenrcJava**?🔹 | <code>boolean</code> | Use projenrc in java.<br/>__*Default*__: true
 **projenrcJavaOptions**?🔹 | <code>[java.ProjenrcOptions](#projen-java-projenrcoptions)</code> | Options related to projenrc in java.<br/>__*Default*__: default options
 **projenrcJson**?🔹 | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.<br/>__*Default*__: false
@@ -12259,6 +12583,7 @@ Name | Type | Description
 **parent**?🔹 | <code>[Project](#projen-project)</code> | The parent project, if this project is part of a bigger project.<br/>__*Optional*__
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenrcJava**?🔹 | <code>boolean</code> | Use projenrc in java.<br/>__*Default*__: true
 **projenrcJavaOptions**?🔹 | <code>[java.ProjenrcOptions](#projen-java-projenrcoptions)</code> | Options related to projenrc in java.<br/>__*Default*__: default options
 **projenrcJson**?🔹 | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.<br/>__*Default*__: false
@@ -12653,6 +12978,8 @@ Name | Type | Description
 **authorUrl**?🔹 | <code>string</code> | Author's URL / Website.<br/>__*Optional*__
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **codeArtifactOptions**?🔹 | <code>[javascript.CodeArtifactOptions](#projen-javascript-codeartifactoptions)</code> | Options for publishing npm package to AWS CodeArtifact.<br/>__*Default*__: undefined
 **deps**?🔹 | <code>Array<string></code> | Runtime dependencies of this module.<br/>__*Default*__: []
@@ -12692,7 +13019,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -12704,6 +13030,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -12756,12 +13084,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -12800,20 +13132,6 @@ Name | Type | Description
 
 
 
-## struct NodeWorkflowSteps 🔹 <a id="projen-javascript-nodeworkflowsteps"></a>
-
-
-
-
-
-
-Name | Type | Description 
------|------|-------------
-**antitamper**🔹 | <code>Array<any></code> | <span></span>
-**install**🔹 | <code>Array<any></code> | <span></span>
-
-
-
 ## struct NpmConfigOptions 🔹 <a id="projen-javascript-npmconfigoptions"></a>
 
 
@@ -12837,6 +13155,96 @@ Name | Type | Description
 Name | Type | Description 
 -----|------|-------------
 **pinnedDevDependency**?🔹 | <code>boolean</code> | Automatically add a pinned dev dependency.<br/>__*Default*__: true
+
+
+
+## struct PrettierBaseOptions 🔹 <a id="projen-javascript-prettierbaseoptions"></a>
+
+
+Options to set in Prettier directly or through overrides.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**arrowParens**?🔹 | <code>[javascript.ArrowParens](#projen-javascript-arrowparens)</code> | Include parentheses around a sole arrow function parameter.<br/>__*Default*__: ArrowParens.ALWAYS
+**bracketSameLine**?🔹 | <code>boolean</code> | Put > of opening tags on the last line instead of on a new line.<br/>__*Default*__: false
+**bracketSpacing**?🔹 | <code>boolean</code> | Print spaces between brackets.<br/>__*Default*__: true
+**cursorOffset**?🔹 | <code>number</code> | Print (to stderr) where a cursor at the given position would move to after formatting.<br/>__*Default*__: -1
+**embeddedLanguageFormatting**?🔹 | <code>[javascript.EmbeddedLanguageFormatting](#projen-javascript-embeddedlanguageformatting)</code> | Control how Prettier formats quoted code embedded in the file.<br/>__*Default*__: EmbeddedLanguageFormatting.AUTO
+**endOfLine**?🔹 | <code>[javascript.EndOfLine](#projen-javascript-endofline)</code> | Which end of line characters to apply.<br/>__*Default*__: EndOfLine.LF
+**filepath**?🔹 | <code>string</code> | Specify the input filepath.<br/>__*Default*__: none
+**htmlWhitespaceSensitivity**?🔹 | <code>[javascript.HTMLWhitespaceSensitivity](#projen-javascript-htmlwhitespacesensitivity)</code> | How to handle whitespaces in HTML.<br/>__*Default*__: HTMLWhitespaceSensitivity.CSS
+**insertPragma**?🔹 | <code>boolean</code> | Insert @format pragma into file's first docblock comment.<br/>__*Default*__: false
+**jsxSingleQuote**?🔹 | <code>boolean</code> | Use single quotes in JSX.<br/>__*Default*__: false
+**parser**?🔹 | <code>string</code> | Which parser to use.<br/>__*Default*__: Prettier automatically infers the parser from the input file path, so you shouldn’t have to change this setting.
+**pluginSearchDirs**?🔹 | <code>Array<string></code> | Custom directory that contains prettier plugins in node_modules subdirectory.<br/>__*Default*__: []
+**plugins**?🔹 | <code>Array<string></code> | Add a plugin.<br/>__*Default*__: []
+**printWidth**?🔹 | <code>number</code> | The line length where Prettier will try wrap.<br/>__*Default*__: 80
+**proseWrap**?🔹 | <code>[javascript.ProseWrap](#projen-javascript-prosewrap)</code> | How to wrap prose.<br/>__*Default*__: ProseWrap.PRESERVE
+**quoteProps**?🔹 | <code>[javascript.QuoteProps](#projen-javascript-quoteprops)</code> | Change when properties in objects are quoted.<br/>__*Default*__: QuoteProps.ASNEEDED
+**rangeEnd**?🔹 | <code>number</code> | Format code ending at a given character offset (exclusive).<br/>__*Default*__: null
+**rangeStart**?🔹 | <code>number</code> | Format code starting at a given character offset.<br/>__*Default*__: 0
+**requirePragma**?🔹 | <code>boolean</code> | Require either '@prettier' or '@format' to be present in the file's first docblock comment in order for it to be formatted.<br/>__*Default*__: false
+**semi**?🔹 | <code>boolean</code> | Print semicolons.<br/>__*Default*__: true
+**singleQuote**?🔹 | <code>boolean</code> | Use single quotes instead of double quotes.<br/>__*Default*__: false
+**tabWidth**?🔹 | <code>number</code> | Number of spaces per indentation level.<br/>__*Default*__: 2
+**trailingComma**?🔹 | <code>[javascript.TrailingComma](#projen-javascript-trailingcomma)</code> | Print trailing commas wherever possible when multi-line.<br/>__*Default*__: TrailingComma.ES5
+**useTabs**?🔹 | <code>boolean</code> | Indent with tabs instead of spaces.<br/>__*Default*__: false
+**vueIndentScriptAndStyle**?🔹 | <code>boolean</code> | Indent script and style tags in Vue files.<br/>__*Default*__: false
+
+
+
+## struct PrettierOptions 🔹 <a id="projen-javascript-prettieroptions"></a>
+
+
+Options for Prettier.
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**arrowParens**?🔹 | <code>[javascript.ArrowParens](#projen-javascript-arrowparens)</code> | Include parentheses around a sole arrow function parameter.<br/>__*Default*__: ArrowParens.ALWAYS
+**bracketSameLine**?🔹 | <code>boolean</code> | Put > of opening tags on the last line instead of on a new line.<br/>__*Default*__: false
+**bracketSpacing**?🔹 | <code>boolean</code> | Print spaces between brackets.<br/>__*Default*__: true
+**cursorOffset**?🔹 | <code>number</code> | Print (to stderr) where a cursor at the given position would move to after formatting.<br/>__*Default*__: -1
+**embeddedLanguageFormatting**?🔹 | <code>[javascript.EmbeddedLanguageFormatting](#projen-javascript-embeddedlanguageformatting)</code> | Control how Prettier formats quoted code embedded in the file.<br/>__*Default*__: EmbeddedLanguageFormatting.AUTO
+**endOfLine**?🔹 | <code>[javascript.EndOfLine](#projen-javascript-endofline)</code> | Which end of line characters to apply.<br/>__*Default*__: EndOfLine.LF
+**filepath**?🔹 | <code>string</code> | Specify the input filepath.<br/>__*Default*__: none
+**htmlWhitespaceSensitivity**?🔹 | <code>[javascript.HTMLWhitespaceSensitivity](#projen-javascript-htmlwhitespacesensitivity)</code> | How to handle whitespaces in HTML.<br/>__*Default*__: HTMLWhitespaceSensitivity.CSS
+**insertPragma**?🔹 | <code>boolean</code> | Insert @format pragma into file's first docblock comment.<br/>__*Default*__: false
+**jsxSingleQuote**?🔹 | <code>boolean</code> | Use single quotes in JSX.<br/>__*Default*__: false
+**overrides**?🔹 | <code>Array<[javascript.PrettierOverride](#projen-javascript-prettieroverride)></code> | Provide a list of patterns to override prettier configuration.<br/>__*Default*__: []
+**parser**?🔹 | <code>string</code> | Which parser to use.<br/>__*Default*__: Prettier automatically infers the parser from the input file path, so you shouldn’t have to change this setting.
+**pluginSearchDirs**?🔹 | <code>Array<string></code> | Custom directory that contains prettier plugins in node_modules subdirectory.<br/>__*Default*__: []
+**plugins**?🔹 | <code>Array<string></code> | Add a plugin.<br/>__*Default*__: []
+**printWidth**?🔹 | <code>number</code> | The line length where Prettier will try wrap.<br/>__*Default*__: 80
+**proseWrap**?🔹 | <code>[javascript.ProseWrap](#projen-javascript-prosewrap)</code> | How to wrap prose.<br/>__*Default*__: ProseWrap.PRESERVE
+**quoteProps**?🔹 | <code>[javascript.QuoteProps](#projen-javascript-quoteprops)</code> | Change when properties in objects are quoted.<br/>__*Default*__: QuoteProps.ASNEEDED
+**rangeEnd**?🔹 | <code>number</code> | Format code ending at a given character offset (exclusive).<br/>__*Default*__: null
+**rangeStart**?🔹 | <code>number</code> | Format code starting at a given character offset.<br/>__*Default*__: 0
+**requirePragma**?🔹 | <code>boolean</code> | Require either '@prettier' or '@format' to be present in the file's first docblock comment in order for it to be formatted.<br/>__*Default*__: false
+**semi**?🔹 | <code>boolean</code> | Print semicolons.<br/>__*Default*__: true
+**singleQuote**?🔹 | <code>boolean</code> | Use single quotes instead of double quotes.<br/>__*Default*__: false
+**tabWidth**?🔹 | <code>number</code> | Number of spaces per indentation level.<br/>__*Default*__: 2
+**trailingComma**?🔹 | <code>[javascript.TrailingComma](#projen-javascript-trailingcomma)</code> | Print trailing commas wherever possible when multi-line.<br/>__*Default*__: TrailingComma.ES5
+**useTabs**?🔹 | <code>boolean</code> | Indent with tabs instead of spaces.<br/>__*Default*__: false
+**vueIndentScriptAndStyle**?🔹 | <code>boolean</code> | Indent script and style tags in Vue files.<br/>__*Default*__: false
+
+
+
+## struct PrettierOverride 🔹 <a id="projen-javascript-prettieroverride"></a>
+
+
+
+
+
+
+Name | Type | Description 
+-----|------|-------------
+**files**🔹 | <code>string &#124; Array<string></code> | Include these files in this override.
+**options**🔹 | <code>[javascript.PrettierBaseOptions](#projen-javascript-prettierbaseoptions)</code> | The options to apply for this override.
+**excludeFiles**?🔹 | <code>string &#124; Array<string></code> | Exclude these files from this override.<br/>__*Optional*__
 
 
 
@@ -12951,7 +13359,6 @@ Name | Type | Description
 **container**?🔹 | <code>[github.workflows.ContainerOptions](#projen-github-workflows-containeroptions)</code> | Job container options.<br/>__*Default*__: defaults
 **gitIdentity**?🔹 | <code>[github.GitIdentity](#projen-github-gitidentity)</code> | The git identity to use for commits.<br/>__*Default*__: "github-actions
 **labels**?🔹 | <code>Array<string></code> | Labels to apply on the PR.<br/>__*Default*__: no labels.
-**rebuild**?🔹 | <code>boolean</code> | Execute 'build' after the upgrade.<br/>__*Default*__: true
 **runsOn**?🔹 | <code>Array<string></code> | Github Runner selection labels.<br/>__*Default*__: ["ubuntu-latest"]
 **schedule**?🔹 | <code>[javascript.UpgradeDependenciesSchedule](#projen-javascript-upgradedependenciesschedule)</code> | Schedule to run on.<br/>__*Default*__: UpgradeDependenciesSchedule.DAILY
 **secret**?🔹 | <code>string</code> | Which secret to use when creating the PR.<br/>__*Default*__: default github token.
@@ -13224,6 +13631,7 @@ Name | Type | Description
 **poetryOptions**?🔹 | <code>[python.PoetryPyprojectOptionsWithoutDeps](#projen-python-poetrypyprojectoptionswithoutdeps)</code> | Additional options to set for poetry if using poetry.<br/>__*Optional*__
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenrcJson**?🔹 | <code>boolean</code> | Generate (once) .projenrc.json (in JSON). Set to `false` in order to disable .projenrc.json generation.<br/>__*Default*__: false
 **projenrcJsonOptions**?🔹 | <code>[ProjenrcOptions](#projen-projenrcoptions)</code> | Options for .projenrc.json.<br/>__*Default*__: default options
 **projenrcPython**?🔹 | <code>boolean</code> | Use projenrc in python.<br/>__*Default*__: true
@@ -13589,7 +13997,6 @@ Name | Type | Description
 **branch**🔹 | <code>string</code> | The default branch name to release from.
 **task**🔹 | <code>[Task](#projen-task)</code> | The task to execute in order to create the release artifacts.
 **versionFile**🔹 | <code>string</code> | A name of a .json file to set the `version` field in after a bump.
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **githubRelease**?🔹 | <code>boolean</code> | Create a GitHub release for each release.<br/>__*Default*__: true
 **jsiiReleaseVersion**?🔹 | <code>string</code> | Version requirement of `jsii-release` which is used to publish modules to npm.<br/>__*Default*__: "latest"
 **majorVersion**?🔹 | <code>number</code> | Major version to release from the default branch.<br/>__*Default*__: Major version is not enforced.
@@ -13622,7 +14029,6 @@ Project options for release.
 
 Name | Type | Description 
 -----|------|-------------
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **jsiiReleaseVersion**?🔹 | <code>string</code> | Version requirement of `jsii-release` which is used to publish modules to npm.<br/>__*Default*__: "latest"
 **majorVersion**?🔹 | <code>number</code> | Major version to release from the default branch.<br/>__*Default*__: Major version is not enforced.
 **npmDistTag**?🔹 | <code>string</code> | The npmDistTag to use when publishing from the default branch.<br/>__*Default*__: "latest"
@@ -13684,7 +14090,6 @@ Name | Type | Description
 **defaultReleaseBranch**⚠️ | <code>string</code> | The name of the main release branch.
 **name**⚠️ | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?⚠️ | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?⚠️ | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?⚠️ | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?⚠️ | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?⚠️ | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -13696,6 +14101,8 @@ Name | Type | Description
 **autoDetectBin**?⚠️ | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?⚠️ | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?⚠️ | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?⚠️ | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?⚠️ | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?⚠️ | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?⚠️ | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?⚠️ | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -13755,9 +14162,13 @@ Name | Type | Description
 **peerDeps**?⚠️ | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?⚠️ | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?⚠️ | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?⚠️ | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?⚠️ | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?⚠️ | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?⚠️ | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?⚠️ | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?⚠️ | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?⚠️ | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
 **projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
@@ -13820,7 +14231,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -13832,6 +14242,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -13891,12 +14303,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -14060,7 +14476,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **assetsdir**?🔹 | <code>string</code> | Assets directory.<br/>__*Default*__: "public"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
@@ -14073,6 +14488,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -14125,12 +14542,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -14184,7 +14605,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **assetsdir**?🔹 | <code>string</code> | Assets directory.<br/>__*Default*__: "public"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
@@ -14197,6 +14617,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -14256,12 +14678,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -14351,7 +14777,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -14363,6 +14788,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -14415,12 +14842,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -14503,7 +14934,6 @@ Name | Type | Description
 **defaultReleaseBranch**🔹 | <code>string</code> | The name of the main release branch.
 **name**🔹 | <code>string</code> | This is the name of your project.
 **allowLibraryDependencies**?🔹 | <code>boolean</code> | Allow the project to include `peerDependencies` and `bundledDependencies`.<br/>__*Default*__: true
-**antitamper**?🔹 | <code>boolean</code> | Checks that after build there are no modified files on git.<br/>__*Default*__: true
 **artifactsDirectory**?🔹 | <code>string</code> | A directory which will contain build artifacts.<br/>__*Default*__: "dist"
 **authorEmail**?🔹 | <code>string</code> | Author's e-mail.<br/>__*Optional*__
 **authorName**?🔹 | <code>string</code> | Author's name.<br/>__*Optional*__
@@ -14515,6 +14945,8 @@ Name | Type | Description
 **autoDetectBin**?🔹 | <code>boolean</code> | Automatically add all executables under the `bin` directory to your `package.json` file under the `bin` section.<br/>__*Default*__: true
 **autoMergeOptions**?🔹 | <code>[github.AutoMergeOptions](#projen-github-automergeoptions)</code> | Configure options for automatic merging on GitHub.<br/>__*Default*__: see defaults in `AutoMergeOptions`
 **bin**?🔹 | <code>Map<string, string></code> | Binary programs vended with your module.<br/>__*Optional*__
+**bugsEmail**?🔹 | <code>string</code> | The email address to which issues should be reported.<br/>__*Optional*__
+**bugsUrl**?🔹 | <code>string</code> | The url to your project's issue tracker.<br/>__*Optional*__
 **buildWorkflow**?🔹 | <code>boolean</code> | Define a GitHub workflow for building PRs.<br/>__*Default*__: true if not a subproject
 **bundledDeps**?🔹 | <code>Array<string></code> | List of dependencies to bundle into this module.<br/>__*Optional*__
 **bundlerOptions**?🔹 | <code>[javascript.BundlerOptions](#projen-javascript-bundleroptions)</code> | Options for `Bundler`.<br/>__*Optional*__
@@ -14574,12 +15006,16 @@ Name | Type | Description
 **peerDeps**?🔹 | <code>Array<string></code> | Peer dependencies for this module.<br/>__*Default*__: []
 **postBuildSteps**?🔹 | <code>Array<[github.workflows.JobStep](#projen-github-workflows-jobstep)></code> | Steps to execute after build as part of the release workflow.<br/>__*Default*__: []
 **prerelease**?🔹 | <code>string</code> | Bump versions from the default branch as pre-releases (e.g. "beta", "alpha", "pre").<br/>__*Default*__: normal semantic versions
+**prettier**?🔹 | <code>boolean</code> | Setup prettier.<br/>__*Default*__: false
+**prettierIgnoreEnabled**?🔹 | <code>boolean</code> | Defines an .prettierIgnore file.<br/>__*Default*__: false
+**prettierOptions**?🔹 | <code>[javascript.PrettierOptions](#projen-javascript-prettieroptions)</code> | Prettier options.<br/>__*Default*__: opinionated default options
 **projectType**?⚠️ | <code>[ProjectType](#projen-projecttype)</code> | Which type of project this is (library/app).<br/>__*Default*__: ProjectType.UNKNOWN
 **projenCommand**?🔹 | <code>string</code> | The shell command to use in order to run the projen CLI.<br/>__*Default*__: "npx projen"
 **projenDevDependency**?🔹 | <code>boolean</code> | Indicates of "projen" should be installed as a devDependency.<br/>__*Default*__: true
+**projenTokenSecret**?🔹 | <code>string</code> | The name of a secret which includes a GitHub Personal Access Token to be used by projen workflows.<br/>__*Default*__: "PROJEN_GITHUB_TOKEN"
 **projenUpgradeAutoMerge**?⚠️ | <code>boolean</code> | Automatically approve projen upgrade PRs, allowing them to be merged by mergify (if configued).<br/>__*Default*__: false
 **projenUpgradeSchedule**?🔹 | <code>Array<string></code> | Customize the projenUpgrade schedule in cron expression.<br/>__*Default*__: [ "0 6 * * *" ]
-**projenUpgradeSecret**?🔹 | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
+**projenUpgradeSecret**?⚠️ | <code>string</code> | Periodically submits a pull request for projen upgrades (executes `yarn projen:upgrade`).<br/>__*Default*__: no automatic projen upgrade pull requests
 **projenVersion**?🔹 | <code>string</code> | Version of projen to install.<br/>__*Default*__: Defaults to the latest version.
 **projenrcJs**?🔹 | <code>boolean</code> | Generate (once) .projenrc.js (in JavaScript). Set to `false` in order to disable .projenrc.js generation.<br/>__*Default*__: true if projenrcJson is false
 **projenrcJsOptions**?🔹 | <code>[javascript.ProjenrcOptions](#projen-javascript-projenrcoptions)</code> | Options for .projenrc.js.<br/>__*Default*__: default options
@@ -14817,6 +15253,16 @@ Name | Description
 **INCREASE_IF_NECESSARY** 🔹|Increase the version requirement only when required by the new version.
 
 
+## enum ArrowParens 🔹 <a id="projen-javascript-arrowparens"></a>
+
+
+
+Name | Description
+-----|-----
+**ALWAYS** 🔹|
+**AVOID** 🔹|
+
+
 ## enum AutoRelease 🔹 <a id="projen-javascript-autorelease"></a>
 
 Automatic bump modes.
@@ -14825,6 +15271,39 @@ Name | Description
 -----|-----
 **EVERY_COMMIT** 🔹|Automatically bump & release a new version for every commit to "main".
 **DAILY** 🔹|Automatically bump & release a new version on a daily basis.
+
+
+## enum EmbeddedLanguageFormatting 🔹 <a id="projen-javascript-embeddedlanguageformatting"></a>
+
+
+
+Name | Description
+-----|-----
+**AUTO** 🔹|
+**OFF** 🔹|
+
+
+## enum EndOfLine 🔹 <a id="projen-javascript-endofline"></a>
+
+
+
+Name | Description
+-----|-----
+**AUTO** 🔹|
+**CR** 🔹|
+**CRLF** 🔹|
+**LF** 🔹|
+
+
+## enum HTMLWhitespaceSensitivity 🔹 <a id="projen-javascript-htmlwhitespacesensitivity"></a>
+
+
+
+Name | Description
+-----|-----
+**CSS** 🔹|
+**IGNORE** 🔹|
+**STRICT** 🔹|
 
 
 ## enum NodePackageManager 🔹 <a id="projen-javascript-nodepackagemanager"></a>
@@ -14846,6 +15325,39 @@ Name | Description
 -----|-----
 **PUBLIC** 🔹|Package is public.
 **RESTRICTED** 🔹|Package can only be accessed with credentials.
+
+
+## enum ProseWrap 🔹 <a id="projen-javascript-prosewrap"></a>
+
+
+
+Name | Description
+-----|-----
+**ALWAYS** 🔹|
+**NEVER** 🔹|
+**PRESERVE** 🔹|
+
+
+## enum QuoteProps 🔹 <a id="projen-javascript-quoteprops"></a>
+
+
+
+Name | Description
+-----|-----
+**ASNEEDED** 🔹|
+**CONSISTENT** 🔹|
+**PRESERVE** 🔹|
+
+
+## enum TrailingComma 🔹 <a id="projen-javascript-trailingcomma"></a>
+
+
+
+Name | Description
+-----|-----
+**ALL** 🔹|
+**ES5** 🔹|
+**NONE** 🔹|
 
 
 ## enum TypeScriptJsxMode 🔹 <a id="projen-javascript-typescriptjsxmode"></a>
